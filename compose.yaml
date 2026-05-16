@@ -1,0 +1,177 @@
+networks:
+  sam-local-network:
+    name: sam-local-network
+    driver: bridge
+
+services:
+  sam-dind:
+    image: ${DIND_IMAGE}
+    privileged: true # Though this is not recommended, it's required for DinD to work properly
+    container_name: sam-dind
+    extends:
+      service: _base
+      file: _base.yaml
+    volumes:
+      - ./profiles/${SAM_PROFILE}/deployer:/root/.sam-deployer:ro # For SAM Deployer to store deployed agent's configuration
+      - /tmp/${SAM_PROFILE}/dind:/var/lib/docker
+      - ./configs/dind/certs/ca:/certs/ca:rw # DinD TLS certs (required when DOCKER_TLS_CERTDIR is set)
+      - ./configs/dind/certs/client:/certs/client:rw # DinD TLS certs (required when DOCKER_TLS_CERTDIR is set)
+    environment:
+      # With this presents, dind will generate TLS certs and listen on 2376 with TLS.
+      # We will use DOCKER_HOST env var in SAM Deployer to point to this TLS-enabled endpoint.
+      DOCKER_TLS_CERTDIR: "/certs"
+      # Add `sam-dind` to the SAN of TLS certs to avoid "x509: certificate is valid for ..., not sam-dind" error when SAM Deployer connects to DinD with TLS
+      DOCKER_TLS_SAN: "DNS:sam-dind"
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+      start_period: 28s
+
+  sam-portainer:
+    image: portainer/portainer-ce:lts
+    container_name: sam-portainer
+    extends:
+      service: _base
+      file: _base.yaml
+    command: 
+      - -H
+      - tcp://sam-dind:2376
+      - --tlsverify
+      - --tlscacert
+      - /certs/ca.pem
+      - --tlscert
+      - /certs/cert.pem
+      - --tlskey
+      - /certs/key.pem
+      - --admin-password-file
+      - /tmp/sample.portainer.password.txt
+    depends_on:
+      sam-dind:
+        condition: service_healthy
+    volumes:
+      # - /var/run/docker.sock:/var/run/docker.sock
+      - ./configs/sample.portainer.password.txt:/tmp/sample.portainer.password.txt:ro
+      - ./configs/dind/certs/client:/certs:ro # DinD TLS
+    ports:
+      - 19090:9000
+
+  sam-core:
+    image: ${SAM_MAIN_IMAGE}:${SAM_MAIN_TAG}
+    container_name: sam-core-ee-${SAM_MAIN_TAG}
+    extends:
+      service: _base
+      file: _base.yaml
+    user: "999:999" # From official compose file, to avoid permission issue when SAM Main writes to mounted volume
+    working_dir: /proj
+    command:
+      # - sam
+      - run
+      - "/proj/configs/agents"
+      - "/proj/configs/base/platform.yaml"
+      - "/proj/configs/base/webui_backend.yaml"
+      - "/proj/configs/base/management_server.yaml"
+    ports:
+      - "8000:8000"  # SAM browser UI for demo
+      - "8001:8001"  # SAM platform API server
+      - "8881:8080"  # For genernal REST gateway testing
+      - "8882:8088"  # For general Webhook gateway testing
+      - "${MANAGEMENT_SERVER_PORT:-1370}:${MANAGEMENT_SERVER_PORT:-1370}" # For management server, which is used for OTLP metrics export in this profile
+    volumes:
+      - sam_activities:/tmp/solace-agent-mesh # From official compose file
+      - ./profiles/${SAM_PROFILE}/core:/proj:rw
+    env_file:
+      - ./profiles/${SAM_PROFILE}/core/sam-core.env
+      - ./profiles/${SAM_PROFILE}/core/app.env
+      - ./profiles/${SAM_PROFILE}/shared.env
+      - ./profiles/${SAM_PROFILE}/models.env
+      - ./profiles/_common/envs/s3/s3-internal.env
+      - ./profiles/_common/secrets/s3-sam.env
+      - ./profiles/_common/secrets/apps.env
+    environment:
+      # For SAM Core to use correct management server port for OTLP metrics export
+      MANAGEMENT_SERVER_PORT: ${MANAGEMENT_SERVER_PORT:-1370}
+
+  sam-deployer:
+    image: ${SAM_DEPLOYER_IMAGE}:${SAM_DEPLOYER_TAG}
+    container_name: sam-deployer-${SAM_DEPLOYER_TAG}
+    extends:
+      service: _base
+      file: _base.yaml
+    depends_on:
+      sam-dind:
+        condition: service_healthy
+    volumes:
+      # Support both Docker and Podman sockets
+      # Docker uses: /var/run/docker.sock
+      # Podman uses: ${XDG_RUNTIME_DIR}/podman/podman.sock (typically /run/user/<uid>/podman/podman.sock)
+      - ./profiles/${SAM_PROFILE}/deployer:/root/.sam-deployer:rw # For SAM Deployer to store deployed agent's configuration
+      - ./profiles/${SAM_PROFILE}/core/.env:/app/.env:ro # For SAM Deployer to access env vars defined in .env file
+      - ./profiles/${SAM_PROFILE}/core/agent.env:/app/agent.env:ro
+      - ./configs/dind/certs/client:/certs/client:ro # DinD TLS
+      - ./scripts/deployer:/scripts_deployer:ro
+      - ./_docker_config.json:/root/.docker/config.json:ro # Secret for pulling images from private registry.
+    environment:
+      # for the deployer to use correct SAM image when deploying agents.
+      SAM_OFFICIAL_IMAGE: ${SAM_MAIN_OFFICIAL_IMAGE}:${SAM_MAIN_TAG}
+      # Use DIND to provide container engine capabilities
+      DOCKER_HOST: tcp://sam-dind:2376
+      DOCKER_TLS_VERIFY: 1
+      DOCKER_CERT_PATH: /certs/client
+      # Use CONTAINER_ENGINE env var to support both docker and podman
+      CONTAINER_ENGINE: ${CONTAINER_ENGINE:-docker}
+      CONTAINER_NETWORK: ${CONTAINER_NETWORK:-sam}
+      # Available after 1.6.3
+      DEPLOYMENT_ENV: docker_quickstart
+      # DEPLOYER_VERSION: ${SAM_DEPLOYER_TAG}
+      HEALTH_SERVER_ENABLED: true
+      HEALTH_SERVER_PORT: 8089
+      # HEALTH_STARTUP_PATH: /startup
+      # HEALTH_LIVENESS_PATH: /healthz
+      # Since original healthcheck in Dockerfile is not the correct endpoint, we will override it with the correct one here
+      # REFER TO: https://github.com/SolaceProducts/solace-agent-mesh-helm-quickstart/blob/core/charts/solace-agent-mesh/templates/deployment_agent_deployer.yaml
+      HEALTH_READINESS_PATH: /readyz
+      # We need to use the template replacement by SAM Deployer pythone code
+      DEPLOY_COMMAND: >
+        /scripts_deployer/deploy.sh {{ id }} {{ envFilePath }} {{ agentYamlPath }}
+      UPDATE_COMMAND: >
+        /scripts_deployer/update.sh {{ id }} {{ envFilePath }} {{ agentYamlPath }}
+      STATUS_COMMAND: > 
+        /scripts_deployer/status.sh {{ id }}
+      UNDEPLOY_COMMAND: > 
+        /scripts_deployer/undeploy.sh {{ id }}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8089/readyz"]
+      interval: 8s
+      timeout: 5s
+      retries: 8
+      start_period: 18s
+    env_file:
+      - ./profiles/${SAM_PROFILE}/core/sam-deployer.env
+      - ./profiles/${SAM_PROFILE}/shared.env
+      - ./profiles/${SAM_PROFILE}/models.env
+      - ./profiles/_common/envs/s3/s3-internal.env
+      - ./profiles/_common/secrets/s3-sam.env
+
+  kiosk:
+    build:
+      context: .
+      dockerfile: kiosk/Dockerfile
+    image: fy27-demothon/kiosk:dev
+    container_name: kiosk
+    extends:
+      service: _base
+      file: _base.yaml
+    ports:
+      - "${KIOSK_PORT:-9888}:9000"
+    env_file:
+      - ./profiles/${SAM_PROFILE}/core/kiosk.env
+    volumes:
+      - ./profiles/${SAM_PROFILE}/core/db:/data/db
+      - ./profiles/${SAM_PROFILE}/core/mock:/data/mock
+      - ./frontend/dist:/data/frontend-dist:ro
+      - ./sponsor-specific/BrandedCSS:/data/brand:ro
+
+volumes:
+  sam_activities:

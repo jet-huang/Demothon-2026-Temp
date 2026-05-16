@@ -1,0 +1,5 @@
+# DinD TLS certs are generated at runtime by the docker:dind container.
+# Only track the directory structure, not the actual cert files.
+*/*.pem
+*/*.srl
+*/*.cnf

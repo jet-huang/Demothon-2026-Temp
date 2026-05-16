@@ -1,0 +1,58 @@
+networks:
+  sam-local-network:
+    name: sam-local-network
+    driver: bridge
+
+volumes:
+  sam-s3-data:
+
+services:
+  sam-s3:
+    image: ${S3_IMAGE}:${S3_TAG}
+    container_name: sam-s3-${S3_TAG}
+    extends:
+      service: _base
+      file: _base.yaml
+    ports:
+      - "${S3_SEAWEEDFS_MASTER_PORT:-9333}:9333"    # Master server
+      # - "${S3_VOLUME_PORT:-8080}:8080"    # Volume server
+      - "${S3_SEAWEEDFS_FILER_PORT:-8888}:8888"     # Filer server (for simple file browsing / downloading)
+      - "${S3_API_PORT:-8333}:8333"        # S3 API
+    command: >
+      server
+      -s3
+      -s3.port=8333
+      -dir=/data
+      #-volume.max=100
+      #-master.volumeSizeLimitMB=1024
+    volumes:
+      - sam-s3-data:/data
+      - ./configs/seaweedfs/filer.toml:/etc/seaweedfs/filer.toml
+    healthcheck:
+      test: ["CMD", "wget", "--timeout=3", "--quiet", "--tries=1", "-O", "/dev/null", "http://127.0.0.1:8888"]
+      interval: 10s
+      timeout: 10s
+      retries: 6
+      start_period: 40s
+    env_file:
+      - ./profiles/${SAM_PROFILE}/shared.env
+      - ./profiles/_common/envs/s3/s3-internal.env
+      - ./profiles/_common/secrets/s3-sam.env
+
+  s3-init:
+    restart: no # This should be executed once
+    image: ${S3_CLIENT_IMAGE}:${S3_CLIENT_TAG}
+    depends_on:
+      sam-s3:
+        condition: service_healthy
+    extends:
+      service: _base
+      file: _base.yaml
+    entrypoint: ["/bin/sh", "/init-s3.sh"]
+    volumes:
+      - ${S3_INIT_SCRIPT}:/init-s3.sh
+    env_file:
+      - ./profiles/${SAM_PROFILE}/shared.env
+      - ./profiles/_common/envs/s3/s3-internal.env
+      - ./profiles/_common/secrets/s3-sam.env
+
