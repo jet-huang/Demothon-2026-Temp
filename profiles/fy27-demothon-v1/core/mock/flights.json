@@ -1,0 +1,62 @@
+{
+  "SQ505": {
+    "carrier": "Singapore Airlines",
+    "origin": "SFO",
+    "destination": "SIN",
+    "scheduled_departure": "2026-05-27T04:00:00+00:00",
+    "scheduled_arrival": "2026-05-27T15:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "A26",
+    "aircraft": "Boeing 787-9"
+  },
+  "SQ640": {
+    "carrier": "Singapore Airlines",
+    "origin": "SIN",
+    "destination": "SFO",
+    "scheduled_departure": "2026-05-30T03:00:00+00:00",
+    "scheduled_arrival": "2026-05-30T13:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "B28",
+    "aircraft": "Boeing 787-9"
+  },
+  "KE260": {
+    "carrier": "Korean Air",
+    "origin": "SFO",
+    "destination": "ICN",
+    "scheduled_departure": "2026-05-28T04:00:00+00:00",
+    "scheduled_arrival": "2026-05-28T15:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "A28",
+    "aircraft": "Boeing 787-9"
+  },
+  "KE614": {
+    "carrier": "Korean Air",
+    "origin": "ICN",
+    "destination": "SFO",
+    "scheduled_departure": "2026-05-31T03:00:00+00:00",
+    "scheduled_arrival": "2026-05-31T13:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "B24",
+    "aircraft": "Boeing 787-9"
+  },
+  "NH906": {
+    "carrier": "ANA",
+    "origin": "SFO",
+    "destination": "KIX",
+    "scheduled_departure": "2026-05-28T04:00:00+00:00",
+    "scheduled_arrival": "2026-05-28T15:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "A18",
+    "aircraft": "Boeing 787-9"
+  },
+  "NH964": {
+    "carrier": "ANA",
+    "origin": "KIX",
+    "destination": "SFO",
+    "scheduled_departure": "2026-06-01T03:00:00+00:00",
+    "scheduled_arrival": "2026-06-01T13:00:00+00:00",
+    "status": "ON_TIME",
+    "gate": "B16",
+    "aircraft": "Boeing 787-9"
+  }
+}

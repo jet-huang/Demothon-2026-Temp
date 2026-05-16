@@ -1,0 +1,117 @@
+# Travel demo: Weather agent backed by sam-sql-database against db/weather.db.
+# Schema is seeded by ../../../fakegen/main.py generate, then refreshed pre-demo via
+# ../../../fakegen/main.py refresh.
+
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: weather_agent.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: weather_agent_app
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+    app_config:
+      namespace: "${NAMESPACE}"
+      agent_name: "WeatherAgent"
+      display_name: "Weather"
+      supports_streaming: false
+
+      model: *general_model
+      instruction: |
+        You are the Weather specialist agent for a personal travel assistant.
+        You answer weather questions for the active traveler's destination using
+        SQL queries against the weather_forecast table.
+
+        weather_forecast columns (hourly granularity):
+          - city (TEXT)
+          - offset_hours (INTEGER, hours from now; negative = past, positive = future,
+            source of truth for "when")
+          - forecast_time (TEXT/DATETIME, equals now + offset_hours, refreshed pre-demo)
+          - summary (TEXT)
+          - temp_c (INTEGER, Celsius)
+          - precip_probability (INTEGER, 0-100)
+          - wind_kph (INTEGER)
+          - notes (TEXT)
+
+        Rules:
+        - Always call execute_sql_query first. Never fabricate weather values.
+        - For relative time windows, filter on offset_hours directly. Common mappings:
+          now = 0, "next hour" = 1, "next 3 hours" = 0..3, "today" = 0..23,
+          "tomorrow" = 24..47, "next week" = 0..168. Do NOT compute timestamps yourself.
+        - For absolute datetime questions, filter on forecast_time.
+        - If the user asks for "current time" or "today's date" without weather context,
+          call get_current_time instead of running SQL.
+        - Respond in two lines max: a one-line headline ("Rain, 19 C, 70% precip at 14:00"),
+          then any actionable nuance from notes (e.g. "Carry an umbrella").
+        - If multiple timestamps are relevant, return a tight bullet list ordered by
+          offset_hours, one row per hour (or sample every 3 hours if the window > 12h).
+
+      agent_init_function:
+        module: "sam_sql_database.lifecycle"
+        name: "initialize_sql_agent"
+        config:
+          db_type: "${A_WEATHER_DB_TYPE}"
+          db_name: "${A_WEATHER_DB_NAME}"
+          query_timeout: 15
+          database_purpose: "Hourly weather forecast for the traveler's destination cities during their trip window."
+          data_description: "Single table weather_forecast keyed by (city, forecast_time). offset_hours is hours-from-now (source of truth); forecast_time is the same value materialised and refreshed pre-demo via fakegen refresh."
+          auto_detect_schema: true
+          query_examples:
+            - natural_language: "What's the weather in Tokyo right now?"
+              sql_query: "SELECT * FROM weather_forecast WHERE city='Tokyo' AND offset_hours = 0 ORDER BY forecast_time LIMIT 1;"
+            - natural_language: "Tokyo weather for the next 3 hours"
+              sql_query: "SELECT forecast_time, summary, temp_c, precip_probability, wind_kph, notes FROM weather_forecast WHERE city='Tokyo' AND offset_hours BETWEEN 0 AND 3 ORDER BY offset_hours;"
+            - natural_language: "Will it rain in Tokyo in the next 12 hours?"
+              sql_query: "SELECT forecast_time, summary, precip_probability FROM weather_forecast WHERE city='Tokyo' AND offset_hours BETWEEN 0 AND 12 AND precip_probability >= 50 ORDER BY offset_hours;"
+            - natural_language: "Tokyo forecast for tomorrow"
+              sql_query: "SELECT forecast_time, summary, temp_c, precip_probability FROM weather_forecast WHERE city='Tokyo' AND offset_hours BETWEEN 24 AND 47 ORDER BY offset_hours;"
+            - natural_language: "When in the next week is the heaviest rain expected in Tokyo?"
+              sql_query: "SELECT forecast_time, summary, precip_probability FROM weather_forecast WHERE city='Tokyo' AND offset_hours BETWEEN 0 AND 168 ORDER BY precip_probability DESC LIMIT 1;"
+          response_guidelines: "Quote concrete numbers and the notes field verbatim when relevant."
+
+      agent_cleanup_function:
+        module: "sam_sql_database.lifecycle"
+        name: "cleanup_sql_agent_resources"
+
+      tools:
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+        - tool_type: python
+          component_module: "sam_sql_database.tools"
+          function_name: "execute_sql_query"
+        - tool_type: python
+          component_module: time_tool
+          component_base_path: ../_shared_tools
+          function_name: get_current_time
+          tool_config: {}
+
+      session_service:
+        type: "sql"
+        database_url: "${AGENT_WEATHER_DATABASE_URL, sqlite:///weather-agent.db}"
+        default_behavior: "PERSISTENT"
+      artifact_service: *default_artifact_service
+
+      agent_card:
+        description: "Weather forecast lookup for the traveler's destination cities. Returns summary, highs/lows, precipitation probability, and operational notes for each date. Also reports current local time when asked."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text"]
+        skills:
+          - id: "weather_lookup"
+            name: "Weather Lookup"
+            description: "Queries the weather_forecast table by city and date (or offset_days)."
+          - id: "current_time"
+            name: "Current Time"
+            description: "Returns the current local datetime for a given timezone."
+
+      agent_card_publishing:
+        interval_seconds: 30
+      agent_discovery:
+        enabled: false
+      inter_agent_communication:
+        allow_list: []

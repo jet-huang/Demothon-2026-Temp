@@ -1,0 +1,17 @@
+management_server:
+  enabled: true
+  port: ${MANAGEMENT_SERVER_PORT, 8080}
+  
+  observability:
+    enabled: true
+    metric_prefix: sam
+  
+  exporters:
+    - type: otlp
+      endpoint: ${OTLP_ENDPOINT, http://localhost:4317}
+      protocol: ${OTLP_PROTOCOL, http}
+      metrics: true
+      logs: false
+      log_level: INFO
+      # compression: gzip
+      timeout: 10

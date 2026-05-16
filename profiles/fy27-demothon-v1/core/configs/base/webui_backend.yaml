@@ -1,0 +1,100 @@
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: /tmp/webui_backend.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: a2a_webui_backend_app
+    app_base_path: .
+    app_module: solace_agent_mesh.gateway.http_sse.app
+
+    broker:
+      <<: *broker_connection
+
+    app_config:
+      namespace: ${NAMESPACE, a2a/dev}
+      session_secret_key: ${SESSION_SECRET_KEY, please_change_me_in_production}
+
+      model: *general_model
+      model_provider:
+        - "general"
+
+      gateway_id: ${WEBUI_GATEWAY_ID}
+      fastapi_host: ${FASTAPI_HOST, 0.0.0.0}
+      fastapi_port: ${FASTAPI_PORT, 8000}
+      fastapi_https_port: ${FASTAPI_HTTPS_PORT}
+      ssl_keyfile: ${SSL_KEYFILE}
+      ssl_certfile: ${SSL_CERTFILE}
+      ssl_keyfile_password: ${SSL_KEYFILE_PASSWORD}
+      cors_allowed_origins:
+        - "${FRONTEND_SERVER_URL}"
+        - "http://localhost:3000"
+        - "http://127.0.0.1:3000"
+      cors_allowed_origin_regex: ${CORS_ALLOWED_ORIGIN_REGEX}
+
+      enable_embed_resolution: ${ENABLE_EMBED_RESOLUTION, true}
+      # gateway_artifact_content_limit_bytes: ${GATEWAY_ARTIFACT_LIMIT_BYTES, 10000000}
+      gateway_max_artifact_resolve_size_bytes: ${GATEWAY_ARTIFACT_LIMIT_BYTES, 10000000}
+
+      system_purpose: >
+            The system is an AI Chatbot with agentic capabilities.
+            It will use the agents available to provide information,
+            reasoning and general assistance for the users in this system.
+            **Always return useful artifacts and files that you create to the user.**
+            Provide a status update before each tool call.
+            Your external name is Agent Mesh.
+
+      response_format: >
+            Responses should be clear, concise, and professionally toned.
+            Format responses to the user in Markdown using appropriate formatting.
+
+      frontend_server_url: ${FRONTEND_SERVER_URL, "http://127.0.0.1:8000"}
+      frontend_welcome_message: ${FRONTEND_WELCOME_MESSAGE, ""}
+      frontend_bot_name: ${FRONTEND_BOT_NAME, "Solace Agent Mesh"}
+      frontend_collect_feedback: ${FRONTEND_COLLECT_FEEDBACK, false}
+      frontend_auth_login_url: ${FRONTEND_AUTH_LOGIN_URL, ""}
+      frontend_use_authorization: ${FRONTEND_USE_AUTHORIZATION, false}
+      frontend_redirect_url: ${FRONTEND_REDIRECT_URL, ""}
+
+      frontend_feature_enablement:
+        awsBedrockEnabled: true
+        background_tasks: true
+        binaryArtifactPreview: true
+        proCodeAgents:
+          enabled: true # default: false
+          allowDockerImages: true # default: false
+
+      # Background Tasks Configuration
+      background_tasks:
+        default_timeout_ms: ${BACKGROUND_TASKS_TIMEOUT_MS, 3600000}
+
+      external_auth_callback_uri: ${EXTERNAL_AUTH_CALLBACK, http://localhost:8000/api/v1/auth/callback}
+      external_auth_service_url: ${EXTERNAL_AUTH_SERVICE_URL, http://localhost:8080}
+      external_auth_provider: ${EXTERNAL_AUTH_PROVIDER, azure}
+
+      authorization_service:
+        type: "default_rbac"
+        role_to_scope_definitions_path: "/proj/configs/auth/role-to-scope-definitions.yaml"
+        user_to_role_assignments_path: "/proj/configs/auth/user-to-role-assignments.yaml"
+
+      artifact_service: *default_artifact_service
+
+      session_service:
+        type: "sql"
+        database_url: "${WEB_UI_GATEWAY_DATABASE_URL}"
+        default_behavior: "PERSISTENT"
+
+      platform_service:
+        url: ${PLATFORM_SERVICE_URL, "http://127.0.0.1:8001"}
+
+      task_logging:
+        enabled: true
+        log_status_updates: false # Set this to false to avoid `database is locked` issue
+        log_artifact_events: false # default: false
+        log_file_parts: true
+        max_file_part_size_bytes: 10240
+        hybrid_buffer:
+          enabled: true
+          flush_threshold: 10 # default: 10

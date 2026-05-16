@@ -1,0 +1,22 @@
+{
+  "JL001": {
+    "carrier": "Japan Airlines",
+    "origin": "SFO",
+    "destination": "NRT",
+    "scheduled_departure": "2026-05-13T11:00:00-07:00",
+    "scheduled_arrival": "2026-05-14T15:30:00+09:00",
+    "status": "ON_TIME",
+    "gate": "A8",
+    "aircraft": "Boeing 787-9"
+  },
+  "JL002": {
+    "carrier": "Japan Airlines",
+    "origin": "NRT",
+    "destination": "SFO",
+    "scheduled_departure": "2026-05-17T18:00:00+09:00",
+    "scheduled_arrival": "2026-05-17T11:30:00-07:00",
+    "status": "ON_TIME",
+    "gate": "B12",
+    "aircraft": "Boeing 787-9"
+  }
+}

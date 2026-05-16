@@ -1,0 +1,5 @@
+namespace: ${NAMESPACE}
+authorization_service:                                    
+    type: "default_rbac"
+    role_to_scope_definitions_path: "/proj/configs/auth/role-to-scope-definitions.yaml"
+    user_to_role_assignments_path: "/proj/configs/auth/user-to-role-assignments.yaml"

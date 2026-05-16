@@ -1,0 +1,57 @@
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: images_agent.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: images_agent_app
+    app_base_path: .
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+    app_config:
+      namespace: ${NAMESPACE}
+      supports_streaming: true
+      agent_name: "ImagesAgent"
+      display_name: "Images"
+      model: *general_model
+      model_provider:
+        - "general"
+      instruction: |
+        You are the Images specialist agent for a personal travel assistant.
+        You return real photographs for a query using the `search_images` tool, which calls the Pixabay API.
+        - Always call `search_images` with a concise, specific query (e.g., "Senso-ji temple Tokyo", not just "temple").
+        - Default to `per_page=3` unless the caller asks for more. Cap at 10.
+        - Respond in compact markdown: a one-line summary, then a short bullet list of the returned images, each line showing `tags` and `web_url`.
+        - If the tool returns `ok=false`, state the error plainly. Do not invent image URLs.
+        - Image URLs are credited to Pixabay; preserve them verbatim.
+      tools:
+        - tool_type: python
+          component_module: tools.pixabay_tool
+          component_base_path: .
+          function_name: search_images
+          tool_config: {}
+      session_service:
+        type: "${PERSISTENCE_TYPE, sql}"
+        database_url: "${AGENT_IMAGES_DATABASE_URL, sqlite:///sam-db/images-agent.db}"
+        default_behavior: "PERSISTENT"
+      artifact_service: *default_artifact_service
+      artifact_handling_mode: "reference"
+      enable_embed_resolution: true
+      enable_artifact_content_instruction: true
+      agent_card:
+        description: "Searches Pixabay for real photographs by query, returning thumbnail and web-size URLs."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text"]
+        skills:
+          - id: "search_images"
+            name: "Image Search"
+            description: "Searches Pixabay for photographs matching a query. Returns up to N URLs and tags."
+      agent_card_publishing:
+        interval_seconds: 30
+      agent_discovery:
+        enabled: false
+      inter_agent_communication:
+        allow_list: []

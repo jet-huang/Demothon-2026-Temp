@@ -1,0 +1,165 @@
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: "/tmp/realtime_signals_receiver.log"
+
+!include ../shared_config.yaml
+
+apps:
+  - name: "realtime_signals_receiver"
+    app_base_path: "."
+    app_module: "sam_event_mesh_gateway.app"
+    default_user_identity: "sam_dev_user"
+    broker:
+      <<: *broker_connection
+
+    app_config:
+      namespace: "${NAMESPACE}"
+      gateway_type: "event_mesh"
+      gateway_id: "019e2990-6a4f-7ea1-bb15-b93dcf6fcbd8"
+      gateway_card_publishing:
+        enabled: true
+        interval_seconds: 30
+      artifact_service:
+        type: ${ARTIFACT_SERVICE_TYPE, s3}
+        bucket_name: ${S3_BUCKET_NAME}
+        endpoint_url: ${S3_ENDPOINT_URL}
+        aws_region: ${AWS_REGION, us-east-1}
+        artifact_scope: namespace
+      enable_embed_resolution: true
+      gateway_artifact_content_limit_bytes: 10000000
+      gateway_recursive_embed_depth: 3
+      authorization_service:
+        type: "none"
+      system_purpose: >
+        The system is an AI Chatbot with agentic capabilities.
+        It will use the agents available to provide information,
+        reasoning and general assistance for the users in this system.
+        **Always return artifacts and files that you create to the user using the `signal_artifact_for_return` tool.**
+        Provide a status update before each tool call.
+        Your external name is Agent Mesh.
+
+      event_mesh_broker_config:
+        broker_url: "${SOLACE_BROKER_URL}"
+        broker_vpn: "${SOLACE_BROKER_VPN}"
+        broker_username: "${SOLACE_BROKER_USERNAME}"
+        broker_password: "${SOLACE_BROKER_PASSWORD}"
+
+      event_handlers:
+        - name: flight_changes
+          user_identity_expression: "static:sam_dev_user"
+          default_user_identity: "sam_dev_user"
+          target_agent_name: OrchestratorAgent
+          payload_format: json
+          on_success: flight_changes_success
+          on_error: flight_changes_error
+          subscriptions:
+            - topic: "D/changes/flight/>"
+          forward_context:
+            traveler_id: "input.payload:traveler_id"
+            carrier: "input.payload:flight.carrier"
+            flight_no: "input.payload:flight.flight_no"
+          # Structured invocation: input_expression must resolve to the raw
+          # payload object so the input_schema validator sees `type: object`.
+          # Routing logic lives in a2a_orchestrator.yaml's `instruction:`;
+          # the output shape is enforced by `output_schema` below.
+          input_expression: "input:payload"
+          structured_invocation:
+            input_schema:
+              $id: "https://fy27-demothon/event-schemas/flight-change.input.schema.json"
+              $schema: "https://json-schema.org/draft/2020-12/schema"
+              title: FlightChangeEvent
+              description: "Inbound event published by the Chaos Maker on D/changes/flight/{carrier}/{flight_no}/{event_type} and consumed by the EventMesh Gateway."
+              type: object
+              additionalProperties: false
+              required: [event_id, event_type, issued_at, source, traveler_id, flight, change]
+              properties:
+                event_id:
+                  type: string
+                  description: "Idempotency key. ULID or UUID. Prefixed with 'evt_'."
+                  pattern: "^evt_[A-Za-z0-9-]+$"
+                traveler_id:
+                  type: string
+                  minLength: 1
+                  description: "Identifier of the audience traveler; substituted into the reply topic via forward_context."
+                event_type:
+                  type: string
+                  enum: [delay, cancel, gate-change, status]
+                  description: "Must equal the last topic level."
+                issued_at:
+                  type: string
+                  format: date-time
+                  description: "RFC 3339 timestamp with timezone offset."
+                source:
+                  type: string
+                  minLength: 1
+                  description: "Free-form producer identifier. 'chaos-maker' for the demo publisher."
+                flight:
+                  type: object
+                  additionalProperties: false
+                  required: [flight_no, carrier, origin_iata, destination_iata]
+                  properties:
+                    flight_no: {type: string, pattern: "^[A-Z0-9]{2,7}$"}
+                    carrier: {type: string, pattern: "^[A-Z0-9]{2,3}$"}
+                    origin_iata: {type: string, pattern: "^[A-Z]{3}$"}
+                    destination_iata: {type: string, pattern: "^[A-Z]{3}$"}
+                    scheduled_departure: {type: [string, "null"], format: date-time}
+                    scheduled_arrival: {type: [string, "null"], format: date-time}
+                change:
+                  type: object
+                  additionalProperties: false
+                  required: [previous_status, new_status, reason, reason_code]
+                  properties:
+                    previous_status: {type: string, enum: [ON_TIME, DELAYED, CANCELLED, GATE_CHANGE]}
+                    new_status: {type: string, enum: [ON_TIME, DELAYED, CANCELLED, GATE_CHANGE]}
+                    delay_minutes:
+                      type: [integer, "null"]
+                      description: "Signed integer minutes relative to schedule. null for non-delay events."
+                    new_estimated_departure: {type: [string, "null"], format: date-time}
+                    new_estimated_arrival: {type: [string, "null"], format: date-time}
+                    new_gate:
+                      type: [string, "null"]
+                      description: "Populated only for event_type=gate-change."
+                    reason: {type: string, minLength: 1, description: "Human-readable reason."}
+                    reason_code: {type: string, enum: [WX, ATC, MX, CREW, OPS]}
+            output_schema:
+              $id: "https://fy27-demothon/event-schemas/flight-change.output.schema.json"
+              $schema: "https://json-schema.org/draft/2020-12/schema"
+              title: FlightChangeReplan
+              description: "Orchestrator response shape consumed by the phone-frame UI. Matches the RePlan TypeScript type in frontend/src/types.ts."
+              type: object
+              additionalProperties: false
+              required: [headline, weather, itineraryShifts]
+              properties:
+                headline: {type: string, minLength: 1, description: "One-line summary of the disruption and the re-plan outcome."}
+                weather: {type: string, description: "Compact weather line for the new arrival window at the destination."}
+                itineraryShifts:
+                  type: array
+                  description: "Proposed shifted itinerary items, ordered by time."
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [time, title, note]
+                    properties:
+                      time: {type: string, description: "Local time of the slot, e.g. '15:00'."}
+                      title: {type: string}
+                      note: {type: string, description: "Short rationale, e.g. 'moved from 09:00 to 15:00 due to delay'."}
+                agentSteps:
+                  type: array
+                  description: "Optional. Per-agent step trail surfaced to the UI as the orchestrator runs."
+                  items:
+                    type: object
+                    additionalProperties: false
+                    required: [agent, label, status]
+                    properties:
+                      agent: {type: string}
+                      label: {type: string}
+                      status: {type: string, enum: [pending, running, done]}
+
+      output_handlers:
+        - name: flight_changes_success
+          payload_expression: "task_response:structured_output"
+          topic_expression: "template:D/res/{{text://user_data.forward_context:traveler_id}}/ok"
+        - name: flight_changes_error
+          payload_expression: "task_response:a2a_task_response.error"
+          topic_expression: "template:D/res/{{text://user_data.forward_context:traveler_id}}/ng"

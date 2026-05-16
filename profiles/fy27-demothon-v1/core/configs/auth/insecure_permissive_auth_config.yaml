@@ -1,0 +1,8 @@
+# Insecure permissive authentication configuration
+# ⚠️ This configuration is intended for development and testing purposes only.
+# Do NOT use in production environments as it grants unrestricted access.
+
+authorization_service:
+  type: "none"  # ⚠️ Development only - grants full access
+
+namespace: ${NAMESPACE}

@@ -1,0 +1,5 @@
+users:
+  sam_dev_user:
+    roles: 
+      - sam_admin
+    description: "Admin"

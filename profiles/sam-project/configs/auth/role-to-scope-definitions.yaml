@@ -1,0 +1,5 @@
+roles:
+  sam_admin:
+    description: "Full access for SAM administrators"
+    scopes:
+      - "*"

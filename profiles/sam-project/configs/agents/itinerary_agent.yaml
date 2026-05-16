@@ -1,0 +1,115 @@
+# Travel demo: Itinerary agent backed by sam-sql-database against db/itinerary.db.
+# Schema is seeded by ../../../fakegen/main.py generate (traveler, trip, itinerary_item
+# schemas all targeting sqlite:///db/itinerary.db), then refreshed pre-demo via
+# ../../../fakegen/main.py refresh.
+
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: itinerary_agent.log
+
+!include ../shared_config.yaml
+
+apps:
+  - name: itinerary_agent_app
+    app_module: solace_agent_mesh.agent.sac.app
+    broker:
+      <<: *broker_connection
+    app_config:
+      namespace: "${NAMESPACE}"
+      agent_name: "ItineraryAgent"
+      display_name: "Itinerary"
+      supports_streaming: false
+
+      model: *general_model
+      instruction: |
+        You are the Itinerary specialist agent for a personal travel assistant.
+        You read and propose updates to the active traveler's plan via SQL queries
+        against three tables.
+
+        Schema:
+          traveler(user_id, name, home_city)
+          trip(user_id, start_offset, end_offset, origin_city, origin_iata,
+               destination_city, destination_iata, start_date, end_date)
+          itinerary_item(user_id, day, hour, date, city, title, location, activity_type)
+
+        Active traveler user_id: 'demo-traveler-001'. Always filter by this user_id.
+        `day` is 0-indexed days from today (0 = today, 1 = tomorrow).
+        `hour` is the 24-hour start time of the slot (9, 15, 21).
+
+        Rules:
+        - Always call execute_sql_query first; never invent itinerary content.
+        - For "show today / day N / the plan" questions, return rows ordered by day then hour.
+        - For replan questions (e.g. flight delayed by X hours), do not write to the DB.
+          Instead return a proposed shifted plan in a short markdown list of
+          {hour -> title @ location} pairs, calling out which items moved and why.
+        - If asked for "current time" or "today's date" without itinerary context,
+          call get_current_time instead of running SQL.
+        - Keep responses dense and scannable. No greetings, no filler.
+
+      agent_init_function:
+        module: "sam_sql_database.lifecycle"
+        name: "initialize_sql_agent"
+        config:
+          db_type: "${A_ITINERARY_DB_TYPE}"
+          db_name: "${A_ITINERARY_DB_NAME}"
+          query_timeout: 15
+          database_purpose: "The active traveler's full trip plan: traveler profile, trip envelope, and per-day itinerary items."
+          data_description: "Three tables: traveler, trip, itinerary_item. itinerary_item.day is 0-indexed (0 = today). itinerary_item.hour is the 24h start time of the slot."
+          auto_detect_schema: true
+          query_examples:
+            - natural_language: "What is on the plan for tomorrow?"
+              sql_query: "SELECT hour, title, location, activity_type FROM itinerary_item WHERE user_id = 'demo-traveler-001' AND day = 1 ORDER BY hour;"
+            - natural_language: "Show me the whole trip."
+              sql_query: "SELECT day, date, hour, title, location FROM itinerary_item WHERE user_id = 'demo-traveler-001' ORDER BY day, hour;"
+            - natural_language: "When does the traveler arrive in Tokyo?"
+              sql_query: "SELECT start_date, destination_city FROM trip WHERE user_id = 'demo-traveler-001';"
+            - natural_language: "What sightseeing is planned today?"
+              sql_query: "SELECT hour, title, location FROM itinerary_item WHERE user_id = 'demo-traveler-001' AND day = 0 AND activity_type = 'sightseeing' ORDER BY hour;"
+          response_guidelines: "Always include the date and hour for each item. Do not invent items not present in the DB."
+
+      agent_cleanup_function:
+        module: "sam_sql_database.lifecycle"
+        name: "cleanup_sql_agent_resources"
+
+      tools:
+        - tool_type: builtin-group
+          group_name: "artifact_management"
+        - tool_type: builtin-group
+          group_name: "data_analysis"
+        - tool_type: python
+          component_module: "sam_sql_database.tools"
+          function_name: "execute_sql_query"
+        - tool_type: python
+          component_module: _shared_tools.time_tool
+          component_base_path: .
+          function_name: get_current_time
+          tool_config: {}
+
+      session_service:
+        type: "sql"
+        database_url: "${AGENT_ITINERARY_DATABASE_URL, sqlite:///sam-db/itinerary-agent.db}"
+        default_behavior: "PERSISTENT"
+      artifact_service: *default_artifact_service
+
+      agent_card:
+        description: "Reads the traveler's itinerary (traveler, trip, itinerary_item tables) and proposes shifted plans in response to disruptions. Read-only — does not mutate the DB."
+        defaultInputModes: ["text"]
+        defaultOutputModes: ["text"]
+        skills:
+          - id: "itinerary_lookup"
+            name: "Itinerary Lookup"
+            description: "Queries the traveler's plan by day, date, or activity type."
+          - id: "itinerary_replan"
+            name: "Itinerary Replan Proposal"
+            description: "Given a disruption (e.g. flight delay) returns a proposed shifted plan."
+          - id: "current_time"
+            name: "Current Time"
+            description: "Returns the current local datetime for a given timezone."
+
+      agent_card_publishing:
+        interval_seconds: 30
+      agent_discovery:
+        enabled: false
+      inter_agent_communication:
+        allow_list: []

@@ -1,0 +1,68 @@
+log:
+  stdout_log_level: INFO
+  log_file_level: DEBUG
+  log_file: "/tmp/event_mesh_gateway_demo.log"
+
+!include ../shared_config.yaml
+
+apps:
+  - name: "event-mesh-gateway-demo"
+    app_base_path: "."
+    app_module: "sam_event_mesh_gateway.app"
+    default_user_identity: "sam_dev_user"
+    broker:
+      <<: *broker_connection
+
+    app_config:
+      namespace: "${NAMESPACE}"
+      gateway_id: "event-mesh-gateway-demo-01"
+      artifact_service:
+        type: ${ARTIFACT_SERVICE_TYPE, s3}
+        bucket_name: ${S3_BUCKET_NAME}
+        endpoint_url: ${S3_ENDPOINT_URL}
+        aws_region: ${AWS_REGION, us-east-1}
+        artifact_scope: namespace
+      authorization_service:
+        type: "none"
+
+      event_mesh_broker_config:
+        broker_url: "${SOLACE_BROKER_URL}"
+        broker_vpn: "${SOLACE_BROKER_VPN}"
+        broker_username: "${SOLACE_BROKER_USERNAME}"
+        broker_password: "${SOLACE_BROKER_PASSWORD}"
+
+      # --- Event Handlers ---
+      # Listen on demo/input/> and forward to OrchestratorAgent as a plain text prompt.
+      event_handlers:
+        - name: "demo_request_handler"
+          subscriptions:
+            - topic: "demo/input/>"
+          payload_format: "json"
+          payload_encoding: "utf-8"
+          user_identity_expression: "input.user_properties:user_id"
+          default_user_identity: "sam_dev_user"
+          target_agent_name: "OrchestratorAgent"
+          # Build the prompt from the incoming payload's "prompt" field.
+          # The full raw payload is also appended for context.
+          input_expression: "template:{{text://input.payload:prompt}}"
+          forward_context:
+            # Carry the correlation_id through to the response topic.
+            correlation_id: "input.user_properties:correlation_id"
+          on_success: "demo_success_handler"
+          on_error: "demo_error_handler"
+
+      # --- Output Handlers ---
+      output_handlers:
+        - name: "demo_success_handler"
+          # Publish the agent's plain-text answer to demo/output/{correlation_id}/ok
+          topic_expression: "template:demo/output/{{text://user_data.forward_context:correlation_id}}/ok"
+          payload_expression: "task_response:text"
+          payload_encoding: "utf-8"
+          payload_format: "text"
+
+        - name: "demo_error_handler"
+          # Publish error details to demo/output/{correlation_id}/ng
+          topic_expression: "template:demo/output/{{text://user_data.forward_context:correlation_id}}/ng"
+          payload_expression: "task_response:a2a_task_response.error"
+          payload_encoding: "utf-8"
+          payload_format: "json"

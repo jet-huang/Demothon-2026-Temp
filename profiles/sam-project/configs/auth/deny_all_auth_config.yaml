@@ -1,0 +1,7 @@
+# Deny all authorization configuration
+# Configure "default_rbac" or "custom" to grant access as needed.
+
+authorization_service:
+  type: "deny_all"  # Deny all access
+
+namespace: ${NAMESPACE}
