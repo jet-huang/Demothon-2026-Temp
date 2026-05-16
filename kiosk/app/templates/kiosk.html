@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{ title }}</title>
+    <link rel="icon" href="/brand/solace-favicon-bigdot.png" />
+    <link rel="stylesheet" href="/brand/index.css" />
+    <link rel="stylesheet" href="/static/kiosk.css" />
+  </head>
+  <body class="bg-gradient-deep-dark text-white font-figtree">
+    <header class="kiosk-header">
+      <img src="/brand/solace-logo.svg" alt="Solace" class="kiosk-logo" />
+    </header>
+    <main class="kiosk-hero">
+      <h1 class="font-newspirit text-bright-green">{{ title }}</h1>
+      <p class="kiosk-tagline">{{ tagline }}</p>
+      <p class="kiosk-cta">Scan a QR to start your flight.</p>
+    </main>
+    <section id="trips" class="kiosk-trips" aria-live="polite">
+      <!-- populated by /static/kiosk.js -->
+    </section>
+    <script src="/static/kiosk.js" defer></script>
+  </body>
+</html>

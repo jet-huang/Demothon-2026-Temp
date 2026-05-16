@@ -1,0 +1,112 @@
+{
+  "regions": [
+    {
+      "city": "Tokyo",
+      "iata": "NRT",
+      "carrier_code": "JL",
+      "carrier_name": "Japan Airlines",
+      "activities": [
+        "Senso-ji temple visit",
+        "Tsukiji outer market food tour",
+        "Imperial Palace gardens stroll",
+        "teamLab Planets immersive art",
+        "Shibuya crossing & shopping",
+        "Akihabara electronics walk",
+        "Meiji Shrine quiet morning",
+        "Ueno Park museum loop",
+        "Odaiba waterfront sunset",
+        "Roppongi nightlife sampler"
+      ]
+    },
+    {
+      "city": "Osaka",
+      "iata": "KIX",
+      "carrier_code": "NH",
+      "carrier_name": "ANA",
+      "activities": [
+        "Dotonbori street food crawl",
+        "Osaka Castle history walk",
+        "Umeda Sky Building lookout",
+        "Shinsekai retro stroll",
+        "Kuromon Ichiba market",
+        "Universal Studios Japan day",
+        "Nara day trip and deer park",
+        "Sumiyoshi Taisha shrine",
+        "Den-Den Town anime browse",
+        "Tempozan harbor wheel"
+      ]
+    },
+    {
+      "city": "Seoul",
+      "iata": "ICN",
+      "carrier_code": "KE",
+      "carrier_name": "Korean Air",
+      "activities": [
+        "Gyeongbokgung palace tour",
+        "Bukchon Hanok village walk",
+        "Myeongdong shopping evening",
+        "Hongdae street art crawl",
+        "Namsan Tower cable car",
+        "Dongdaemun night market",
+        "Han River bike ride",
+        "Insadong tea house break",
+        "DMZ half-day tour",
+        "Lotte World Tower lookout"
+      ]
+    },
+    {
+      "city": "Taipei",
+      "iata": "TPE",
+      "carrier_code": "BR",
+      "carrier_name": "EVA Air",
+      "activities": [
+        "Taipei 101 observatory",
+        "Shilin night market food run",
+        "Jiufen old street day trip",
+        "National Palace Museum",
+        "Longshan Temple visit",
+        "Beitou hot springs",
+        "Elephant Mountain hike",
+        "Ximending youth district",
+        "Yangmingshan flower walk",
+        "Tamsui riverside sunset"
+      ]
+    },
+    {
+      "city": "Singapore",
+      "iata": "SIN",
+      "carrier_code": "SQ",
+      "carrier_name": "Singapore Airlines",
+      "activities": [
+        "Gardens by the Bay light show",
+        "Marina Bay Sands skypark",
+        "Hawker centre food tour",
+        "Sentosa beach afternoon",
+        "Chinatown heritage walk",
+        "Little India spice trail",
+        "Singapore Zoo morning",
+        "Botanic Gardens orchid loop",
+        "Clarke Quay river cruise",
+        "Haji Lane boutique browse"
+      ]
+    },
+    {
+      "city": "Bangkok",
+      "iata": "BKK",
+      "carrier_code": "TG",
+      "carrier_name": "Thai Airways",
+      "activities": [
+        "Grand Palace tour",
+        "Wat Pho reclining Buddha",
+        "Chao Phraya river dinner",
+        "Chatuchak weekend market",
+        "Khao San Road evening",
+        "Floating market half-day",
+        "Jim Thompson house",
+        "Lumphini Park morning",
+        "Asiatique riverside walk",
+        "Thai cooking class"
+      ]
+    }
+  ]
+}

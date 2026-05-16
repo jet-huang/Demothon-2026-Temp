@@ -1,0 +1,23 @@
+services:
+  kiosk:
+    build:
+      context: ..
+      dockerfile: kiosk/Dockerfile
+    image: fy27-demothon/kiosk:dev
+    container_name: kiosk
+    restart: unless-stopped
+    ports:
+      - "${KIOSK_PORT:-9000}:9000"
+    env_file:
+      - .env
+    environment:
+      KIOSK_HOST_URL: ${KIOSK_HOST_URL:-http://localhost:9000}
+      KIOSK_ITINERARY_DB: /data/db/itinerary.db
+      KIOSK_FLIGHTS_JSON: /data/mock/flights.json
+      KIOSK_FRONTEND_DIST: /data/frontend-dist
+      KIOSK_BRAND_DIR: /data/brand
+    volumes:
+      - ../profiles/fy27-demothon-v1/core/db:/data/db
+      - ../profiles/fy27-demothon-v1/core/mock:/data/mock
+      - ../frontend/dist:/data/frontend-dist:ro
+      - ../sponsor-specific/BrandedCSS:/data/brand:ro
