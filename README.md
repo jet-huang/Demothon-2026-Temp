@@ -6,6 +6,10 @@ Agentic AI personal travel assistant built on Solace Agent Mesh (SAM) Enterprise
 
 For a step-by-step setup guide on a clean machine, see [QUICK_START.md](QUICK_START.md).
 
+Or for a live demo, check here:
+
+[Live Demo for Demothon 2026](https://jet-huang.github.io/Demothon-2026-Temp)
+
 ## What you will see at the demo
 
 1. A kiosk projects three randomly generated trips, each with its own QR code.
