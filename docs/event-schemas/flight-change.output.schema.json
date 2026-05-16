@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fy27-demothon/event-schemas/flight-change.output.schema.json",
+  "title": "FlightChangeReplan",
+  "description": "Orchestrator response shape consumed by the phone-frame UI. Matches the RePlan TypeScript type in frontend/src/types.ts.",
+  "type": "object",
+  "required": ["headline", "weather", "itineraryShifts"],
+  "additionalProperties": false,
+  "properties": {
+    "headline": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line summary of the disruption and the re-plan outcome."
+    },
+    "weather": {
+      "type": "string",
+      "description": "Compact weather line for the new arrival window at the destination."
+    },
+    "itineraryShifts": {
+      "type": "array",
+      "description": "Proposed shifted itinerary items, ordered by time.",
+      "items": {
+        "type": "object",
+        "required": ["time", "title", "note"],
+        "additionalProperties": false,
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Local time of the slot, e.g. '15:00'."
+          },
+          "title": {
+            "type": "string"
+          },
+          "note": {
+            "type": "string",
+            "description": "Short rationale, e.g. 'moved from 09:00 to 15:00 due to delay'."
+          }
+        }
+      }
+    },
+    "agentSteps": {
+      "type": "array",
+      "description": "Optional. Per-agent step trail surfaced to the UI as the orchestrator runs.",
+      "items": {
+        "type": "object",
+        "required": ["agent", "label", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "agent": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "running", "done"]
+          }
+        }
+      }
+    }
+  }
+}

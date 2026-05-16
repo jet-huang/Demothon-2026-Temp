@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://fy27-demothon/event-schemas/flight-change.input.schema.json",
+  "title": "FlightChangeEvent",
+  "description": "Inbound event published by the Chaos Maker on D/changes/flight/{carrier}/{flight_no}/{event_type} and consumed by the EventMesh Gateway.",
+  "type": "object",
+  "required": ["event_id", "event_type", "issued_at", "source", "traveler_id", "flight", "change"],
+  "additionalProperties": false,
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Idempotency key. ULID or UUID. Prefixed with 'evt_'.",
+      "pattern": "^evt_[A-Za-z0-9-]+$"
+    },
+    "traveler_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Identifier of the audience traveler whose trip this event belongs to. Mapped 1:1 to the DB column user_id. Captured by the EventMesh Gateway via forward_context and substituted into the reply topic template D/res/{traveler_id}/{ok|ng}."
+    },
+    "event_type": {
+      "type": "string",
+      "enum": ["delay", "cancel", "gate-change", "status"],
+      "description": "Must equal the last topic level."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "RFC 3339 timestamp with timezone offset."
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Free-form producer identifier. 'chaos-maker' for the demo publisher."
+    },
+    "flight": {
+      "type": "object",
+      "required": ["flight_no", "carrier", "origin_iata", "destination_iata"],
+      "additionalProperties": false,
+      "properties": {
+        "flight_no": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{2,7}$"
+        },
+        "carrier": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{2,3}$"
+        },
+        "origin_iata": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "destination_iata": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "scheduled_departure": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "scheduled_arrival": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        }
+      }
+    },
+    "change": {
+      "type": "object",
+      "required": ["previous_status", "new_status", "reason", "reason_code"],
+      "additionalProperties": false,
+      "properties": {
+        "previous_status": {
+          "type": "string",
+          "enum": ["ON_TIME", "DELAYED", "CANCELLED", "GATE_CHANGE"]
+        },
+        "new_status": {
+          "type": "string",
+          "enum": ["ON_TIME", "DELAYED", "CANCELLED", "GATE_CHANGE"]
+        },
+        "delay_minutes": {
+          "type": ["integer", "null"],
+          "description": "Signed integer minutes relative to schedule. null for non-delay events."
+        },
+        "new_estimated_departure": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "new_estimated_arrival": {
+          "type": ["string", "null"],
+          "format": "date-time"
+        },
+        "new_gate": {
+          "type": ["string", "null"],
+          "description": "Populated only for event_type=gate-change."
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Human-readable reason."
+        },
+        "reason_code": {
+          "type": "string",
+          "enum": ["WX", "ATC", "MX", "CREW", "OPS"]
+        }
+      }
+    }
+  }
+}
