@@ -1,0 +1,32 @@
+.venv/
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.DS_Store
+
+# Generated SQLite DBs (rebuild via fakegen / mockgen)
+sam-project/db/*.db
+sam-project/db/*.db-*
+profiles/sam-project/db/*.db
+profiles/sam-project/db/*.db-*
+
+# SAM runtime logs and sqlite state
+sam-project/logs/
+sam-project/configs/*.log
+
+**/sam-db/*
+**/db/*
+**/.sam
+**/tmp/eval*
+# Runtime secrets and credentials
+.env
+_docker_config.json
+
+# Runtime instance profiles (contain real API keys and secrets)
+profiles/*/core/sam-core.env
+profiles/*/shared.env
+profiles/*/models.env
+profiles/*/core/sam-deployer.env
+profiles/_common/secrets/s3-sam.env
+profiles/_common/secrets/apps.env
