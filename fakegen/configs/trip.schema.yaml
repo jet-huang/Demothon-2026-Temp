@@ -1,0 +1,42 @@
+table: trip
+primary_key: [user_id]
+
+# Single-row table. start_offset/end_offset are kept as columns so the
+# `date_from_offset` generator can derive start_date / end_date anchored to "now",
+# letting `fakegen refresh` re-anchor the trip window pre-demo.
+groups:
+  - column: user_id
+    values: [demo-traveler-001]
+  - column: start_offset
+    values: [0]
+  - column: end_offset
+    values: [2]
+
+columns:
+  - {name: user_id, type: string}
+  - {name: start_offset, type: integer}
+  - {name: end_offset, type: integer}
+  - name: origin_city
+    type: string
+    generator: random_element
+    args: {elements: [San Francisco]}
+  - name: origin_iata
+    type: string
+    generator: random_element
+    args: {elements: [SFO]}
+  - name: destination_city
+    type: string
+    generator: random_element
+    args: {elements: [Tokyo]}
+  - name: destination_iata
+    type: string
+    generator: random_element
+    args: {elements: [HND]}
+  - name: start_date
+    type: date
+    generator: date_from_offset
+    args: {source: start_offset}
+  - name: end_date
+    type: date
+    generator: date_from_offset
+    args: {source: end_offset}

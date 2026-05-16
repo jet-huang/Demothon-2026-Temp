@@ -1,0 +1,17 @@
+table: traveler
+primary_key: [user_id]
+
+groups:
+  - column: user_id
+    values: [demo-traveler-001]
+
+columns:
+  - {name: user_id, type: string}
+  - name: name
+    type: string
+    generator: random_element
+    args: {elements: [Sam Demo]}
+  - name: home_city
+    type: string
+    generator: random_element
+    args: {elements: [San Francisco]}

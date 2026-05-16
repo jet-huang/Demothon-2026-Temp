@@ -1,0 +1,43 @@
+table: weather_forecast
+primary_key: [city, offset_hours]
+
+# Axis-driven generation: one row per (city, offset_hours).
+# Total rows = len(groups[0].values) * ((sequence.max - sequence.min) / step + 1).
+groups:
+  - column: city
+    values: [Tokyo, Osaka, Kyoto, Sapporo, Fukuoka, Nagoya]
+
+sequence:
+  column: offset_hours
+  min: -24
+  max: 720
+  step: 1
+
+columns:
+  - {name: city, type: string}            # supplied by groups axis
+  - {name: offset_hours, type: integer}   # supplied by sequence axis
+  - name: forecast_time
+    type: datetime
+    generator: datetime_from_offset
+    args: {source: offset_hours, unit: hours}
+  - name: summary
+    type: string
+    generator: random_element
+    args:
+      elements: [Sunny, Cloudy, Rainy, Stormy, Snowy, Foggy]
+  - name: temp_c
+    type: integer
+    generator: random_int
+    args: {min: -10, max: 35}
+  - name: precip_probability
+    type: integer
+    generator: random_int
+    args: {min: 0, max: 100}
+  - name: wind_kph
+    type: integer
+    generator: random_int
+    args: {min: 0, max: 80}
+  - name: notes
+    type: string
+    generator: sentence
+    args: {nb_words: 8}

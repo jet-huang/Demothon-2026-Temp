@@ -1,0 +1,65 @@
+table: itinerary_item
+primary_key: [user_id, day, hour]
+
+# 2 days x 3 hourly slots = 6 itinerary items.
+# `day` is 0-indexed days from "today" so date_from_offset can derive `date`
+# directly without arithmetic. The hour axis doubles as the time-of-day column.
+groups:
+  - column: user_id
+    values: [demo-traveler-001]
+  - column: day
+    values: [0, 1]
+
+sequence:
+  column: hour
+  min: 9
+  max: 21
+  step: 6
+
+columns:
+  - {name: user_id, type: string}
+  - {name: day, type: integer}
+  - {name: hour, type: integer}
+  - name: date
+    type: date
+    generator: date_from_offset
+    args: {source: day}
+  - name: city
+    type: string
+    generator: random_element
+    args: {elements: [Tokyo]}
+  - name: title
+    type: string
+    generator: random_element
+    args:
+      elements:
+        - Senso-ji temple visit
+        - Tsukiji outer market food tour
+        - Imperial Palace gardens stroll
+        - teamLab Planets immersive art
+        - Shibuya crossing & shopping
+        - Akihabara electronics walk
+        - Meiji Shrine quiet morning
+        - Ueno Park museum loop
+  - name: location
+    type: string
+    generator: random_element
+    args:
+      elements:
+        - Asakusa
+        - Tsukiji
+        - Chiyoda
+        - Toyosu
+        - Shibuya
+        - Akihabara
+        - Yoyogi
+        - Ueno
+  - name: activity_type
+    type: string
+    generator: random_element
+    args:
+      elements:
+        - sightseeing
+        - food
+        - shopping
+        - museum

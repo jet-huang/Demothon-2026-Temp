@@ -1,0 +1,3 @@
+url: sqlite:///db/weather.db
+create_if_missing: true
+truncate: true
