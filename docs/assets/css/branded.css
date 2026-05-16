@@ -1,0 +1,71 @@
+/* Local-only build: CDN Tailwind imports removed per no-CDN constraint.
+   Brand utility classes below are self-contained and do not require Tailwind. */
+
+@font-face {
+  font-family: 'NewSpirit';
+  src: url('../fonts/fonnts.com-New-Spirit-.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Apply fonts to the body */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Figtree', sans-serif;
+}
+
+/* Create utility classes for specific fonts */
+.font-newspirit {
+  font-family: 'NewSpirit', serif !important;
+}
+
+.font-figtree {
+  font-family: 'Figtree', sans-serif !important;
+}
+
+/* Solace Brand Colors */
+:root {
+  /* Primary Colors */
+  --brand-classic-green: #00C895;
+  --brand-bright-green: #ABFF88;
+  --brand-deep-blue: #093B5F;
+  --brand-dark-blue: #03213B;
+  --brand-white: #FFFFFF;
+  
+  /* Secondary Colors */
+  --brand-spring-green: #C7FFCB;
+  --brand-sky-blue: #C2F7FF;
+  --brand-dark-green: #009193;
+  
+  /* Grays */
+  --brand-gray-1: #F4F4F4;
+  --brand-gray-2: #EAEAEA;
+  --brand-gray-3: #D6D6D6;
+  
+  /* Gradients */
+  --gradient-bright-classic: linear-gradient(to right, #ABFF88, #00C895);
+  --gradient-dark-deep: linear-gradient(to right, #009193, #093B5F);
+  --gradient-deep-dark: linear-gradient(to right, #093B5F, #03213B);
+}
+
+/* Brand Color Utility Classes */
+.bg-classic-green { background-color: var(--brand-classic-green) !important; }
+.bg-bright-green { background-color: var(--brand-bright-green) !important; }
+.bg-deep-blue { background-color: var(--brand-deep-blue) !important; }
+.bg-dark-blue { background-color: var(--brand-dark-blue) !important; }
+.bg-spring-green { background-color: var(--brand-spring-green) !important; }
+.bg-sky-blue { background-color: var(--brand-sky-blue) !important; }
+.bg-dark-green { background-color: var(--brand-dark-green) !important; }
+
+.text-classic-green { color: var(--brand-classic-green) !important; }
+.text-bright-green { color: var(--brand-bright-green) !important; }
+.text-deep-blue { color: var(--brand-deep-blue) !important; }
+.text-dark-blue { color: var(--brand-dark-blue) !important; }
+.text-sky-blue { color: var(--brand-sky-blue) !important; }
+
+.border-classic-green { border-color: var(--brand-classic-green) !important; }
+.border-deep-blue { border-color: var(--brand-deep-blue) !important; }
+
+/* Gradient Backgrounds */
+.bg-gradient-bright-classic { background: var(--gradient-bright-classic) !important; }
+.bg-gradient-dark-deep { background: var(--gradient-dark-deep) !important; }
+.bg-gradient-deep-dark { background: var(--gradient-deep-dark) !important; }

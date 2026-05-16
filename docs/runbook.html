@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Itinerary in Motion — Demo Runbook</title>
+  <link rel="icon" type="image/png" href="assets/solace-favicon-bigdot.png" />
+  <link rel="stylesheet" href="assets/css/branded.css" />
+  <link rel="stylesheet" href="assets/css/page.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <img class="logo" src="assets/svg/solace-logo.svg" alt="Solace logo" />
+      <div class="topbar-right">
+        <span class="badge">FY27 Demothon · Runbook</span>
+        <!--
+          DEPLOYMENT NOTE: Update this href before promoting to production.
+          The placeholder below points at the staging host. The real demo site
+          URL must replace https://ai01.twsolace.com when deploying for judges.
+        -->
+        <a class="demo-cta" href="https://ai01.twsolace.com" target="_blank" rel="noopener">
+          Open Demo Site
+          <span class="demo-cta-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </header>
+
+    <a class="back-link" href="index.html">← Back to overview</a>
+
+    <h1>Demo Runbook</h1>
+    <p class="lead">
+      The step-by-step operating manual for the Itinerary in Motion live demo. Use this page
+      to verify the environment, run the rehearsed keystrokes, recover from common faults, and
+      reset between rehearsals.
+    </p>
+
+    <section class="runbook">
+      <h2>2-minute briefing outline</h2>
+      <ol class="runbook-list">
+        <li><strong>Problem statement.</strong> Travellers receive disruption SMSes that do not actually fix anything.</li>
+        <li><strong>What we built.</strong> A SAM-orchestrated assistant that fans a single broker event out across four specialist agents and returns a phone-friendly re-plan.</li>
+        <li><strong>The pieces.</strong> Solace Event Broker, SAM orchestrator and four specialist agents, fakegen-seeded SQLite, React phone-frame UI.</li>
+        <li><strong>What you will see.</strong> A publisher emits one disruption. The UI shows the alert, the agent fan-out, and the re-plan card live.</li>
+      </ol>
+
+      <h2>Pre-flight checklist</h2>
+      <ol class="runbook-list">
+        <li>
+          <strong>Broker reachable.</strong>
+          <p>Verify <code>tcp://192.168.88.188:55555</code> (SMF) and <code>ws://192.168.88.188:8008</code> (WebSocket) respond.</p>
+        </li>
+        <li>
+          <strong>SAM core up.</strong>
+          <pre><code>curl http://&lt;sam-host&gt;:8000/health</code></pre>
+        </li>
+        <li>
+          <strong>Agents discovered.</strong>
+          <p>Open the WebUI agent registry view. Confirm five agents: Orchestrator, Flights, Weather, Itinerary, Images.</p>
+        </li>
+        <li>
+          <strong>Frontend up.</strong>
+          <pre><code>cd frontend &amp;&amp; VITE_USE_MOCK=false npm run dev</code></pre>
+          <p>Open the printed URL in the demo browser tab.</p>
+        </li>
+        <li>
+          <strong>Publisher venv ready.</strong>
+          <pre><code>cd publisher &amp;&amp; uv sync</code></pre>
+        </li>
+        <li>
+          <strong>Pre-warm the orchestrator.</strong>
+          <p>In the WebUI, send the prompt <code>warmup</code>. Wait for a response. Discard.</p>
+        </li>
+        <li>
+          <strong>DB freshness.</strong>
+          <pre><code>cd fakegen &amp;&amp; uv run main.py refresh \
+  --db-config configs/weather.db.yaml \
+  --schema configs/weather.schema.yaml</code></pre>
+          <p>Itinerary dates are anchored at generation time. Regenerate if the demo day rolled over since the last build.</p>
+        </li>
+      </ol>
+
+      <h2>3-minute live keystrokes</h2>
+      <ol class="runbook-list">
+        <li><strong>T+00s.</strong> Frontend visible in phone frame. Narrate: <em>"Idle. Awaiting any disruption on travel/flights/+/status."</em></li>
+        <li>
+          <strong>T+10s.</strong> In the publisher terminal, paste and run:
+          <pre><code>uv run publisher/publish_disruption.py disrupt \
+  --flight JL001 --status DELAYED --minutes 180 --reason weather</code></pre>
+        </li>
+        <li><strong>T+12s.</strong> UI banner: <em>"JL001 delayed 180 min"</em>. Narrate: <em>"The broker just emitted one message. The UI received it via solclientjs WebSocket."</em></li>
+        <li><strong>T+15s.</strong> UI shows the orchestrator firing. First agent step appears.</li>
+        <li><strong>T+25s.</strong> WeatherAgent step done. Narrate destination forecast headline.</li>
+        <li><strong>T+35s.</strong> ItineraryAgent step done. Shifted plan list renders.</li>
+        <li><strong>T+45s.</strong> Final card visible: headline, weather, three-line shifted itinerary. Hold for the audience.</li>
+        <li><strong>T+60s to T+180s.</strong> Q&amp;A. Optional second take: a different flight number to show statelessness.</li>
+      </ol>
+
+      <h2>Recovery (Plan B)</h2>
+      <ol class="runbook-list">
+        <li>If the publisher does not connect within 5 s, switch terminals and run the same command from a backup laptop already on the same VPN.</li>
+        <li>If the UI does not receive an alert within 15 s, click the on-screen <em>"Trigger mock alert"</em> button to drive the demo from the mock path. Narrate honestly: <em>"Showing the same flow against the canned event."</em></li>
+        <li>If the orchestrator stalls or returns an error, queue <code>docs/demo-recovery.mp4</code> and narrate over the recording.</li>
+      </ol>
+
+      <h2>Reset between rehearsals</h2>
+      <ol class="runbook-list">
+        <li>Refresh the frontend tab.</li>
+        <li>In the publisher terminal, ctrl-c any ambient process.</li>
+        <li>Optionally re-run <code>fakegen refresh</code> if the rehearsal block crosses a day boundary.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Sponsor: Solace · Brand assets © Solace Corporation</span>
+      <span>Source: <code>docs/demo-runbook.md</code></span>
+    </footer>
+  </main>
+</body>
+</html>

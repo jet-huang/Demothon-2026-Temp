@@ -1,1448 +1,305 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
+<!doctype html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agentic AI Travel System | Investor Pitch</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --sol:#00C895;
-  --sol-dark:#00a87d;
-  --sol-light:#e6faf4;
-  --sol-lighter:#f2fdf9;
-  --sol-bg:rgba(0,200,149,.06);
-  --navy:#1a2332;
-  --navy2:#2c3e50;
-  --bg:#ffffff;
-  --bg2:#f7f8fa;
-  --bg3:#eef0f4;
-  --surface:#ffffff;
-  --border:#e2e6ec;
-  --border2:#d0d5dd;
-  --text:#1a2332;
-  --text-dim:#5a6577;
-  --text-light:#8892a0;
-  --flight:#e8590c;
-  --weather:#1c7ed6;
-  --crowd:#7c3aed;
-  --content:#d6336c;
-  --learn:#f59f00;
-  --success:#00C895;
-  --danger:#e03131;
-  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);
-  --shadow-lg:0 12px 40px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);
-  --radius:14px;
-}
-html{scroll-behavior:smooth;font-size:16px}
-body{
-  background:var(--bg);color:var(--text);
-  font-family:'Instrument Sans',sans-serif;
-  line-height:1.7;overflow-x:hidden;
-}
-
-/* Nav */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:1rem 2.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-  background:rgba(255,255,255,.88);
-  backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
-  transition:all .3s;
-}
-nav.scrolled{padding:.65rem 2.5rem;box-shadow:var(--shadow)}
-.nav-brand{display:flex;align-items:center;gap:.7rem}
-.nav-logo-icon{
-  width:32px;height:32px;border-radius:8px;
-  background:var(--sol);display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:700;font-size:.9rem;
-}
-.nav-logo-text{font-weight:700;font-size:1rem;color:var(--navy)}
-.nav-logo-sub{font-size:.65rem;color:var(--sol);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{
-  color:var(--text-dim);text-decoration:none;font-size:.8rem;
-  letter-spacing:.06em;text-transform:uppercase;font-weight:600;
-  transition:color .3s;
-}
-.nav-links a:hover{color:var(--sol)}
-
-/* Sections */
-section{padding:5rem 2rem;max-width:1200px;margin:0 auto}
-
-/* Hero */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;
-  justify-content:center;align-items:center;text-align:center;
-  position:relative;overflow:hidden;
-}
-.hero-bg{
-  position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,var(--sol-lighter) 0%,#fff 60%);
-}
-.hero-bg::before{
-  content:'';position:absolute;top:-200px;right:-200px;
-  width:600px;height:600px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,200,149,.12) 0%,transparent 70%);
-}
-.hero-bg::after{
-  content:'';position:absolute;bottom:-100px;left:-150px;
-  width:500px;height:500px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,200,149,.08) 0%,transparent 70%);
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:.5rem;
-  padding:.45rem 1.2rem;
-  border:1px solid rgba(0,200,149,.3);border-radius:100px;
-  font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--sol-dark);background:var(--sol-light);
-  font-weight:700;margin-bottom:2rem;
-}
-.hero-badge::before{
-  content:'';width:6px;height:6px;border-radius:50%;
-  background:var(--sol);
-}
-.hero h1{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(2.6rem,5.5vw,4.8rem);
-  line-height:1.1;margin-bottom:1.2rem;color:var(--navy);
-}
-.hero h1 span{
-  background:linear-gradient(135deg,var(--sol) 0%,var(--sol-dark) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-}
-.hero-sub{
-  font-size:clamp(1rem,1.8vw,1.2rem);color:var(--text-dim);
-  max-width:700px;margin-bottom:3rem;line-height:1.8;
-}
-.hero-phases{
-  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
-  margin-bottom:3rem;
-}
-.phase-chip{
-  display:flex;align-items:center;gap:.5rem;
-  padding:.6rem 1.2rem;border-radius:10px;
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:var(--shadow);font-size:.82rem;font-weight:600;
-  transition:all .3s;
-}
-.phase-chip:hover{border-color:var(--sol);box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.phase-dot{width:8px;height:8px;border-radius:50%}
-.phase-chip:nth-child(1) .phase-dot{background:#1c7ed6}
-.phase-chip:nth-child(2) .phase-dot{background:var(--sol)}
-.phase-chip:nth-child(3) .phase-dot{background:#d6336c}
-.phase-chip:nth-child(4) .phase-dot{background:#f59f00}
-.hero-kpi{display:flex;gap:2rem;flex-wrap:wrap;justify-content:center}
-.kpi-card{
-  text-align:center;padding:1.5rem 2rem;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  min-width:170px;transition:all .3s;
-}
-.kpi-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px);border-color:var(--sol)}
-.kpi-val{
-  font-family:'JetBrains Mono',monospace;
-  font-size:2rem;font-weight:700;color:var(--sol);
-}
-.kpi-label{font-size:.72rem;color:var(--text-dim);margin-top:.3rem;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
-
-/* Section styling */
-.section-tag{
-  font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;
-  color:var(--sol);font-weight:700;margin-bottom:.6rem;
-}
-.section-title{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(1.9rem,3.5vw,2.8rem);margin-bottom:.8rem;
-  color:var(--navy);line-height:1.15;
-}
-.section-desc{color:var(--text-dim);max-width:640px;margin-bottom:2.5rem;font-size:1rem}
-
-/* Vision Section */
-.vision-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;
-}
-.vision-card{
-  padding:2rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  transition:all .4s;position:relative;overflow:hidden;
-}
-.vision-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  border-radius:var(--radius) var(--radius) 0 0;
-}
-.vision-card:nth-child(1)::before{background:linear-gradient(90deg,#1c7ed6,#4dabf7)}
-.vision-card:nth-child(2)::before{background:linear-gradient(90deg,var(--sol),#38d9a9)}
-.vision-card:nth-child(3)::before{background:linear-gradient(90deg,#d6336c,#f06595)}
-.vision-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.vision-icon{
-  width:44px;height:44px;border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.3rem;margin-bottom:1rem;
-}
-.vision-card:nth-child(1) .vision-icon{background:rgba(28,126,214,.1);color:#1c7ed6}
-.vision-card:nth-child(2) .vision-icon{background:var(--sol-light);color:var(--sol)}
-.vision-card:nth-child(3) .vision-icon{background:rgba(214,51,108,.1);color:#d6336c}
-.vision-card h3{font-size:1.05rem;margin-bottom:.5rem;font-weight:700}
-.vision-card p{font-size:.88rem;color:var(--text-dim);line-height:1.7}
-.vision-features{list-style:none;margin-top:.8rem;display:flex;flex-direction:column;gap:.3rem}
-.vision-features li{
-  font-size:.82rem;color:var(--text-dim);
-  padding-left:1rem;position:relative;
-}
-.vision-features li::before{
-  content:'';position:absolute;left:0;top:.55rem;
-  width:5px;height:5px;border-radius:50%;background:var(--sol);
-}
-
-/* Market Gap */
-.gap-container{
-  display:grid;grid-template-columns:1fr auto 1fr;gap:2rem;
-  align-items:center;
-}
-.gap-box{
-  padding:2rem;border-radius:var(--radius);
-}
-.gap-box.current{background:var(--bg2);border:1px solid var(--border)}
-.gap-box.ours{background:var(--sol-light);border:1px solid rgba(0,200,149,.2)}
-.gap-box h3{font-size:1rem;margin-bottom:1rem;font-weight:700;display:flex;align-items:center;gap:.5rem}
-.gap-box.current h3::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--text-light)}
-.gap-box.ours h3::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--sol)}
-.gap-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
-.gap-list li{font-size:.88rem;color:var(--text-dim);display:flex;align-items:flex-start;gap:.5rem}
-.gap-list li::before{margin-top:.35rem;flex-shrink:0}
-.gap-box.current .gap-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--border2)}
-.gap-box.ours .gap-list li::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--sol)}
-.gap-arrow{
-  font-size:2.5rem;color:var(--sol);font-weight:300;
-}
-
-/* Architecture Section */
-.arch-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.arch-section .inner{max-width:1200px;margin:0 auto;padding:5rem 2rem}
-.arch-container{position:relative}
-.arch-layer{margin-bottom:1.5rem}
-.arch-layer-header{
-  font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;
-  font-weight:700;margin-bottom:.8rem;padding-left:.5rem;
-  display:flex;align-items:center;gap:.5rem;
-}
-.arch-layer-header .lnum{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:20px;height:20px;border-radius:6px;
-  background:var(--sol);color:#fff;font-size:.6rem;font-weight:700;
-}
-.arch-nodes-row{
-  display:flex;gap:.8rem;flex-wrap:wrap;
-}
-.arch-node{
-  flex:1;min-width:150px;
-  padding:1rem 1.2rem;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:var(--shadow);transition:all .3s;
-}
-.arch-node:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.arch-node-icon{font-size:1.2rem;margin-bottom:.4rem}
-.arch-node-name{font-size:.85rem;font-weight:700}
-.arch-node-sub{font-size:.72rem;color:var(--text-dim);margin-top:.2rem}
-.arch-node-topic{
-  margin-top:.5rem;padding:.2rem .5rem;border-radius:6px;
-  font-family:'JetBrains Mono',monospace;font-size:.65rem;
-  display:inline-block;
-}
-.arch-node-topic.pub{background:rgba(0,200,149,.08);color:var(--sol-dark);border:1px solid rgba(0,200,149,.15)}
-.arch-node-topic.sub{background:rgba(28,126,214,.08);color:#1c7ed6;border:1px solid rgba(28,126,214,.15)}
-
-/* Solace Platform Box */
-.solace-platform{
-  margin:1.5rem 0;padding:2rem;
-  border-radius:16px;
-  background:linear-gradient(135deg,#1a2332 0%,#243447 100%);
-  color:#fff;position:relative;overflow:hidden;
-}
-.solace-platform::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:200px;height:200px;border-radius:50%;
-  background:radial-gradient(circle,rgba(0,200,149,.15) 0%,transparent 70%);
-}
-.solace-header{
-  display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;
-}
-.solace-logo{
-  width:36px;height:36px;border-radius:10px;
-  background:var(--sol);display:flex;align-items:center;justify-content:center;
-  font-size:.75rem;font-weight:800;color:#fff;
-}
-.solace-title{font-size:1.1rem;font-weight:700;letter-spacing:.03em}
-.solace-subtitle{font-size:.7rem;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase}
-.solace-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem}
-.topic-table{font-family:'JetBrains Mono',monospace;font-size:.75rem}
-.topic-table-title{
-  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.4);margin-bottom:.8rem;font-weight:600;
-  display:flex;align-items:center;gap:.4rem;
-}
-.topic-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.06);
-}
-.topic-name{color:var(--sol)}
-.topic-agents{color:rgba(255,255,255,.5);font-size:.68rem}
-.solace-features{display:flex;flex-direction:column;gap:.8rem}
-.solace-feat{
-  padding:.8rem 1rem;border-radius:10px;
-  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
-  display:flex;align-items:center;gap:.6rem;
-  font-size:.8rem;
-}
-.solace-feat-icon{font-size:1rem;opacity:.7}
-
-/* Arrow between layers */
-.arch-arrows{
-  display:flex;justify-content:center;gap:4rem;
-  padding:.6rem 0;color:var(--border2);font-size:1.2rem;
-}
-.arch-arrows.into-solace{color:var(--sol);font-size:1rem;font-weight:600;padding:.8rem 0}
-.arch-arrows.into-solace span{
-  font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;
-  background:var(--sol-light);color:var(--sol-dark);
-  padding:.3rem .8rem;border-radius:100px;font-weight:700;
-}
-
-/* Agent cards */
-.agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
-.agent-card{
-  padding:1rem 1.2rem;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  box-shadow:var(--shadow);transition:all .3s;
-}
-.agent-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);border-color:var(--sol)}
-.agent-card-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
-.agent-icon{font-size:1rem}
-.agent-name{font-size:.85rem;font-weight:700}
-.agent-topics{display:flex;flex-direction:column;gap:.25rem}
-.agent-topic{
-  font-family:'JetBrains Mono',monospace;font-size:.62rem;
-  padding:.15rem .4rem;border-radius:5px;display:inline-block;
-  width:fit-content;
-}
-.agent-topic.sub{background:rgba(0,200,149,.06);color:var(--sol-dark)}
-.agent-topic.pub{background:rgba(28,126,214,.06);color:#1c7ed6}
-
-/* Output layer */
-.output-grid{display:flex;gap:.8rem;flex-wrap:wrap}
-.output-node{
-  flex:1;min-width:140px;padding:1rem;border-radius:12px;
-  background:var(--surface);border:1px solid var(--border);
-  text-align:center;box-shadow:var(--shadow);
-  font-size:.82rem;font-weight:600;
-  transition:all .3s;
-}
-.output-node:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.output-node-icon{font-size:1.2rem;margin-bottom:.3rem}
-
-/* Topic convention */
-.topic-convention{
-  margin-top:1rem;text-align:center;
-}
-.topic-conv-badge{
-  display:inline-block;padding:.5rem 1.2rem;border-radius:10px;
-  background:var(--navy);color:var(--sol);
-  font-family:'JetBrains Mono',monospace;font-size:.78rem;
-  font-weight:500;
-}
-
-/* Interactive Demo */
-.demo-wrap{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:16px;box-shadow:var(--shadow-md);overflow:hidden;
-}
-.demo-header{
-  padding:1.2rem 2rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  background:var(--bg2);
-}
-.demo-header h3{font-size:.95rem;font-weight:700;color:var(--navy)}
-.demo-status{
-  display:flex;align-items:center;gap:.5rem;
-  font-size:.78rem;color:var(--sol);font-weight:600;
-}
-.demo-status::before{
-  content:'';width:7px;height:7px;border-radius:50%;
-  background:var(--sol);animation:pulse-dot 2s infinite;
-}
-@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
-.demo-body{display:flex;min-height:520px}
-.demo-triggers{
-  width:260px;padding:1.2rem;border-right:1px solid var(--border);
-  display:flex;flex-direction:column;gap:.6rem;
-  background:var(--bg2);
-}
-.demo-triggers h4{
-  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--text-light);margin-bottom:.3rem;font-weight:700;
-}
-.trigger-btn{
-  display:flex;align-items:center;gap:.7rem;
-  padding:.8rem 1rem;border-radius:10px;
-  border:1px solid var(--border);background:var(--surface);
-  color:var(--text);cursor:pointer;
-  transition:all .3s;text-align:left;
-  font-family:'Instrument Sans',sans-serif;font-size:.82rem;
-}
-.trigger-btn:hover{border-color:var(--sol);box-shadow:var(--shadow)}
-.trigger-btn:active{transform:scale(.97)}
-.trigger-btn .t-icon{
-  width:34px;height:34px;border-radius:9px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1rem;flex-shrink:0;
-}
-.trigger-btn.flight .t-icon{background:rgba(232,89,12,.1);color:var(--flight)}
-.trigger-btn.weather .t-icon{background:rgba(28,126,214,.1);color:var(--weather)}
-.trigger-btn.crowd .t-icon{background:rgba(124,58,237,.1);color:var(--crowd)}
-.trigger-btn.content .t-icon{background:rgba(214,51,108,.1);color:var(--content)}
-.trigger-btn.learn .t-icon{background:rgba(245,159,0,.1);color:var(--learn)}
-.trigger-btn .t-text{display:flex;flex-direction:column}
-.trigger-btn .t-label{font-weight:600;font-size:.82rem}
-.trigger-btn .t-desc{font-size:.65rem;color:var(--text-light)}
-.demo-flow{flex:1;padding:1.5rem;position:relative;overflow-y:auto}
-.flow-empty{
-  display:flex;align-items:center;justify-content:center;
-  height:100%;color:var(--text-light);font-size:.88rem;
-  flex-direction:column;gap:.4rem;
-}
-.flow-empty span{font-size:1.8rem;opacity:.25}
-.flow-event{margin-bottom:1rem;animation:flowIn .4s cubic-bezier(.25,.8,.25,1) both}
-@keyframes flowIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.flow-step{
-  display:flex;align-items:flex-start;gap:.8rem;
-  margin-bottom:.8rem;position:relative;padding-left:1.8rem;
-}
-.flow-step::before{
-  content:'';position:absolute;left:.45rem;top:1.6rem;
-  width:1px;height:calc(100% + .3rem);background:var(--border);
-}
-.flow-step:last-child::before{display:none}
-.flow-dot{
-  width:10px;height:10px;border-radius:50%;flex-shrink:0;
-  position:absolute;left:0;top:.4rem;border:2px solid;
-}
-.flow-dot.pending{border-color:var(--border2);background:transparent}
-.flow-dot.active{border-color:var(--sol);background:var(--sol);box-shadow:0 0 10px rgba(0,200,149,.3)}
-.flow-dot.done{border-color:var(--sol);background:var(--sol)}
-.flow-content{flex:1}
-.flow-agent{
-  font-family:'JetBrains Mono',monospace;font-size:.68rem;
-  color:var(--sol-dark);letter-spacing:.04em;font-weight:500;
-}
-.flow-msg{font-size:.82rem;margin-top:.1rem;color:var(--text)}
-.flow-topic{
-  display:inline-block;padding:.12rem .5rem;margin-top:.25rem;
-  border-radius:5px;font-size:.65rem;
-  font-family:'JetBrains Mono',monospace;
-  background:var(--sol-light);color:var(--sol-dark);
-  border:1px solid rgba(0,200,149,.15);
-}
-.flow-result{
-  margin-top:.8rem;padding:1rem;border-radius:12px;
-  background:var(--sol-lighter);border:1px solid rgba(0,200,149,.15);
-  animation:flowIn .4s cubic-bezier(.25,.8,.25,1) both;
-}
-.flow-result h4{font-size:.82rem;color:var(--sol-dark);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem}
-.flow-result p{font-size:.78rem;color:var(--text-dim);line-height:1.6}
-
-/* Roadmap */
-.roadmap-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
-.roadmap-card{
-  padding:1.8rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  position:relative;overflow:hidden;transition:all .4s;
-}
-.roadmap-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.roadmap-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-}
-.roadmap-card:nth-child(1)::before{background:#1c7ed6}
-.roadmap-card:nth-child(2)::before{background:var(--sol)}
-.roadmap-card:nth-child(3)::before{background:#d6336c}
-.roadmap-card:nth-child(4)::before{background:#f59f00}
-.roadmap-phase{
-  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:700;margin-bottom:.6rem;
-}
-.roadmap-card:nth-child(1) .roadmap-phase{color:#1c7ed6}
-.roadmap-card:nth-child(2) .roadmap-phase{color:var(--sol)}
-.roadmap-card:nth-child(3) .roadmap-phase{color:#d6336c}
-.roadmap-card:nth-child(4) .roadmap-phase{color:#f59f00}
-.roadmap-card h3{font-size:1rem;margin-bottom:.6rem;font-weight:700}
-.roadmap-items{list-style:none;display:flex;flex-direction:column;gap:.3rem}
-.roadmap-items li{font-size:.82rem;color:var(--text-dim);padding-left:1rem;position:relative}
-.roadmap-items li::before{content:'';position:absolute;left:0;top:.55rem;width:5px;height:5px;border-radius:50%;background:var(--border2)}
-
-/* Phase 2 Sprint */
-.sprint-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem}
-.sprint-card{
-  padding:1.8rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);
-  transition:all .4s;
-}
-.sprint-card:hover{box-shadow:var(--shadow-md);border-color:var(--sol)}
-.sprint-week{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.7rem;color:var(--sol);
-  letter-spacing:.1em;margin-bottom:.5rem;font-weight:600;
-}
-.sprint-card h3{font-size:1rem;margin-bottom:.6rem;font-weight:700}
-.sprint-items{list-style:none;display:flex;flex-direction:column;gap:.3rem}
-.sprint-items li{font-size:.82rem;color:var(--text-dim);padding-left:1rem;position:relative}
-.sprint-items li::before{content:'';position:absolute;left:0;top:.55rem;width:5px;height:5px;border-radius:50%;background:var(--sol)}
-
-/* Tech & Reliability */
-.tech-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem}
-.tech-card{
-  padding:1.5rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);transition:all .3s;
-}
-.tech-card:hover{box-shadow:var(--shadow-md);border-color:var(--sol)}
-.tech-cat{
-  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--sol);font-weight:700;margin-bottom:.8rem;
-}
-.tech-items{list-style:none;display:flex;flex-direction:column;gap:.4rem}
-.tech-items li{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:.5rem}
-.tech-items li::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--sol);flex-shrink:0}
-
-/* External Resources */
-.res-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:1.2rem;
-}
-.res-card{
-  padding:1.8rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--radius);box-shadow:var(--shadow);transition:all .4s;
-  position:relative;overflow:hidden;
-}
-.res-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  border-radius:var(--radius) var(--radius) 0 0;
-}
-.res-card:nth-child(1)::before{background:var(--flight)}
-.res-card:nth-child(2)::before{background:var(--weather)}
-.res-card:nth-child(3)::before{background:var(--crowd)}
-.res-card:nth-child(4)::before{background:var(--sol)}
-.res-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-4px)}
-.res-cat{
-  font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
-  font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;
-}
-.res-card:nth-child(1) .res-cat{color:var(--flight)}
-.res-card:nth-child(2) .res-cat{color:var(--weather)}
-.res-card:nth-child(3) .res-cat{color:var(--crowd)}
-.res-card:nth-child(4) .res-cat{color:var(--sol)}
-.res-items{list-style:none;display:flex;flex-direction:column;gap:.8rem}
-.res-item{display:flex;flex-direction:column;gap:.15rem}
-.res-item-name{font-size:.88rem;font-weight:600;color:var(--navy)}
-.res-item-desc{font-size:.75rem;color:var(--text-dim);line-height:1.5}
-.res-item-link{
-  font-size:.7rem;font-family:'JetBrains Mono',monospace;
-  color:var(--sol);text-decoration:none;word-break:break-all;
-  transition:color .2s;
-}
-.res-item-link:hover{color:var(--sol-dark);text-decoration:underline}
-
-/* CTA */
-.cta-section{text-align:center;padding:6rem 2rem;position:relative}
-.cta-section::before{
-  content:'';position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,#fff 0%,var(--sol-lighter) 50%,#fff 100%);
-}
-.cta-quote{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(1.2rem,2.5vw,1.8rem);
-  color:var(--navy);margin:1.5rem auto;max-width:700px;
-  line-height:1.5;
-}
-.cta-quote span{color:var(--sol)}
-.cta-decisions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-top:2rem}
-.cta-decision{
-  padding:1.2rem 2rem;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--radius);
-  min-width:200px;text-align:center;box-shadow:var(--shadow);
-  transition:all .3s;
-}
-.cta-decision:hover{box-shadow:var(--shadow-md);border-color:var(--sol)}
-.cta-decision h4{font-size:.88rem;margin-bottom:.3rem;color:var(--sol-dark)}
-.cta-decision p{font-size:.78rem;color:var(--text-dim)}
-
-/* Footer */
-footer{
-  text-align:center;padding:2.5rem 2rem;
-  border-top:1px solid var(--border);background:var(--bg2);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:1rem;
-}
-.footer-brand{display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:600;color:var(--navy)}
-.footer-brand-icon{
-  width:24px;height:24px;border-radius:6px;background:var(--sol);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-size:.6rem;font-weight:800;
-}
-.footer-text{font-size:.78rem;color:var(--text-light)}
-
-/* Scroll reveal */
-.reveal{opacity:0;transform:translateY(24px);transition:all .7s cubic-bezier(.25,.8,.25,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-
-/* Responsive */
-@media(max-width:1024px){
-  .vision-grid{grid-template-columns:1fr}
-  .agent-grid{grid-template-columns:repeat(2,1fr)}
-  .roadmap-grid{grid-template-columns:repeat(2,1fr)}
-  .gap-container{grid-template-columns:1fr;gap:1rem}
-  .gap-arrow{text-align:center;transform:rotate(90deg)}
-  .solace-grid{grid-template-columns:1fr}
-}
-@media(max-width:768px){
-  section,.arch-section .inner{padding:3.5rem 1.2rem}
-  .demo-body{flex-direction:column}
-  .demo-triggers{width:100%;border-right:none;border-bottom:1px solid var(--border);flex-direction:row;flex-wrap:wrap}
-  .nav-links{display:none}
-  .agent-grid{grid-template-columns:1fr}
-  .sprint-grid{grid-template-columns:1fr}
-  .roadmap-grid{grid-template-columns:1fr}
-  footer{justify-content:center;text-align:center}
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Itinerary in Motion — Architecture</title>
+  <link rel="icon" type="image/png" href="assets/solace-favicon-bigdot.png" />
+  <link rel="stylesheet" href="assets/css/branded.css" />
+  <link rel="stylesheet" href="assets/css/page.css" />
 </head>
 <body>
-
-<nav id="navbar">
-  <div class="nav-brand">
-    <div class="nav-logo-icon">A</div>
-    <div>
-      <div class="nav-logo-text">Agentic AI Travel System</div>
-      <div class="nav-logo-sub">Event-Driven Architecture</div>
-    </div>
-  </div>
-  <ul class="nav-links">
-    <li><a href="#vision">Vision</a></li>
-    <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#demo">Live Demo</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#tech">Tech</a></li>
-    <li><a href="#resources">Resources</a></li>
-  </ul>
-</nav>
-
-<!-- Hero -->
-<section class="hero" id="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-badge">Investor Briefing 2026</div>
-  <h1>The <span>Real Travel Agent</span><br>Powered by Agentic AI</h1>
-  <p class="hero-sub">
-    涵蓋行前規劃、行中即時應變、行後內容生成與學習的全旅程自治 Agent 系統。<br>
-    以 Solace Event Mesh 為核心，從「靜態行程生成」升級為「Event-driven Agent Ecosystem」。
-  </p>
-  <div class="hero-phases">
-    <div class="phase-chip"><div class="phase-dot"></div>Phase 1 行前規劃</div>
-    <div class="phase-chip"><div class="phase-dot"></div>Phase 2 行中應變</div>
-    <div class="phase-chip"><div class="phase-dot"></div>Phase 3 內容生成</div>
-    <div class="phase-chip"><div class="phase-dot"></div>Phase 4 長期學習</div>
-  </div>
-  <div class="hero-kpi">
-    <div class="kpi-card">
-      <div class="kpi-val">&lt;15s</div>
-      <div class="kpi-label">Event-to-Suggestion</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val">&gt;30%</div>
-      <div class="kpi-label">Adoption Rate</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val">&gt;95%</div>
-      <div class="kpi-label">Auto Recovery</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-val">8</div>
-      <div class="kpi-label">AI Agents</div>
-    </div>
-  </div>
-</section>
-
-<!-- Vision -->
-<section id="vision">
-  <div class="reveal">
-    <div class="section-tag">Product Vision</div>
-    <h2 class="section-title">全旅程 AI Agent 系統</h2>
-    <p class="section-desc">一位從出發前到回家後都在你身邊的 AI 旅行夥伴，涵蓋規劃、應變、內容與學習。</p>
-  </div>
-  <div class="vision-grid reveal">
-    <div class="vision-card">
-      <div class="vision-icon">&#9992;</div>
-      <h3>行前 Planning Layer</h3>
-      <p>使用者意圖解析、智能行程生成與預算優化。</p>
-      <ul class="vision-features">
-        <li>自然語言行程規劃</li>
-        <li>機票 / 住宿 / 活動自動預訂</li>
-        <li>預算與偏好建模</li>
-        <li>多方案比較與優化</li>
-      </ul>
-    </div>
-    <div class="vision-card">
-      <div class="vision-icon">&#9889;</div>
-      <h3>行中 Real-time Adaptive Layer</h3>
-      <p>旅途中發生意外？系統在秒級內提供可執行替代方案。</p>
-      <ul class="vision-features">
-        <li>航班延誤即時重排行程</li>
-        <li>天氣惡化推薦室內替代</li>
-        <li>人潮過高智能避峰</li>
-        <li>多 Agent 協作決策</li>
-      </ul>
-    </div>
-    <div class="vision-card">
-      <div class="vision-icon">&#10024;</div>
-      <h3>行後 Post-trip Intelligence</h3>
-      <p>自動產出旅遊內容，並持續學習使用者偏好。</p>
-      <ul class="vision-features">
-        <li>自動生成遊記與社群貼文</li>
-        <li>IG / FB 自動發佈</li>
-        <li>Cloudflare 自動建站部署</li>
-        <li>偏好學習驅動下次規劃</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Market Gap -->
-<section id="gap">
-  <div class="reveal">
-    <div class="section-tag">Market Opportunity</div>
-    <h2 class="section-title">現有產品 vs 我們的願景</h2>
-    <p class="section-desc">市場產品集中在行前，我們瞄準的是被忽略的行中與行後。</p>
-  </div>
-  <div class="gap-container reveal">
-    <div class="gap-box current">
-      <h3>2026 年市場現況</h3>
-      <ul class="gap-list">
-        <li>自然語言生成行程</li>
-        <li>機票 / 住宿 / 行程預訂整合</li>
-        <li>僅覆蓋行前階段</li>
-        <li>缺乏旅途中即時決策能力</li>
-        <li>無法整合多源即時資料</li>
-        <li>無長期記憶與行為學習</li>
-      </ul>
-    </div>
-    <div class="gap-arrow">&#8594;</div>
-    <div class="gap-box ours">
-      <h3>Our Vision</h3>
-      <ul class="gap-list">
-        <li>行前 + 行中 + 行後完整覆蓋</li>
-        <li>事件驅動的即時應變系統</li>
-        <li>航班 / 天氣 / 交通 / 人潮即時整合</li>
-        <li>多 Agent 自主協作決策</li>
-        <li>自動內容生成與社群發佈</li>
-        <li>長期偏好學習與個人化模型</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Architecture -->
-<div class="arch-section" id="architecture">
-  <div class="inner">
-    <div class="reveal">
-      <div class="section-tag">System Architecture</div>
-      <h2 class="section-title">Event-Driven + Agent Mesh</h2>
-      <p class="section-desc">以 Solace Platform 為核心，所有邏輯透過事件路由，實現低延遲、高容錯的多 Agent 協作。</p>
-    </div>
-    <div class="arch-container reveal">
-
-      <!-- Layer 1: External Data Sources -->
-      <div class="arch-layer">
-        <div class="arch-layer-header"><span class="lnum">1</span> External Data Sources</div>
-        <div class="arch-nodes-row">
-          <div class="arch-node">
-            <div class="arch-node-icon">&#9992;</div>
-            <div class="arch-node-name">&#x822A;&#x7A7A;&#x516C;&#x53F8; API</div>
-            <div class="arch-node-sub">Flight API</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-icon">&#9748;</div>
-            <div class="arch-node-name">&#x5929;&#x6C23; API</div>
-            <div class="arch-node-sub">Weather API</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-icon">&#128663;</div>
-            <div class="arch-node-name">&#x4EA4;&#x901A;&#x7CFB;&#x7D71;</div>
-            <div class="arch-node-sub">Traffic System</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-icon">&#127963;</div>
-            <div class="arch-node-name">OTA / Klook</div>
-            <div class="arch-node-sub">Booking Platform</div>
-          </div>
-        </div>
+  <main class="page">
+    <header class="topbar">
+      <img class="logo" src="assets/svg/solace-logo.svg" alt="Solace logo" />
+      <div class="topbar-right">
+        <span class="badge">FY27 Demothon</span>
+        <!--
+          DEPLOYMENT NOTE: Update this href before promoting to production.
+          The placeholder below points at the staging host. The real demo site
+          URL must replace https://ai01.twsolace.com when deploying for judges.
+        -->
+        <a class="demo-cta" href="https://ai01.twsolace.com" target="_blank" rel="noopener">
+          Open Demo Site
+          <span class="demo-cta-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
+    </header>
 
-      <div class="arch-arrows">&#8595; &#8595; &#8595; &#8595;</div>
-
-      <!-- Layer 2: Micro-Integrations -->
-      <div class="arch-layer">
-        <div class="arch-layer-header" style="color:var(--sol)"><span class="lnum">2</span> Micro-Integrations (&#x8CC7;&#x6599;&#x63A5;&#x5165;&#x5C64;)</div>
-        <div class="arch-nodes-row">
-          <div class="arch-node">
-            <div class="arch-node-name">Flight Integration</div>
-            <div class="arch-node-sub">Transform &rarr; Normalize</div>
-            <div class="arch-node-topic pub">&rarr; flight/status/delayed</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-name">Weather Integration</div>
-            <div class="arch-node-sub">Transform &rarr; Normalize</div>
-            <div class="arch-node-topic pub">&rarr; weather/alert/typhoon</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-name">Traffic Integration</div>
-            <div class="arch-node-sub">Transform &rarr; Normalize</div>
-            <div class="arch-node-topic pub">&rarr; traffic/congestion/high</div>
-          </div>
-          <div class="arch-node">
-            <div class="arch-node-name">Booking Integration</div>
-            <div class="arch-node-sub">Transform &rarr; Normalize</div>
-            <div class="arch-node-topic pub">&rarr; booking/confirmed</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="arch-arrows into-solace"><span>Event Flow</span></div>
-
-      <!-- Solace Platform -->
-      <div class="solace-platform">
-        <div class="solace-header">
-          <div class="solace-logo">S</div>
-          <div>
-            <div class="solace-title">Solace Platform</div>
-            <div class="solace-subtitle">Event Mesh &middot; PubSub+ Broker</div>
-          </div>
-        </div>
-        <div class="solace-grid">
-          <div class="topic-table">
-            <div class="topic-table-title">&#128203; Topic Routing Table</div>
-            <div class="topic-row"><span class="topic-name">travel/flight/#</span><span class="topic-agents">&rarr; Monitoring, Replanning</span></div>
-            <div class="topic-row"><span class="topic-name">travel/weather/#</span><span class="topic-agents">&rarr; Planning, Monitoring</span></div>
-            <div class="topic-row"><span class="topic-name">travel/booking/#</span><span class="topic-agents">&rarr; Booking, Budget</span></div>
-            <div class="topic-row"><span class="topic-name">travel/content/#</span><span class="topic-agents">&rarr; Social, Web</span></div>
-            <div class="topic-row"><span class="topic-name">travel/memory/#</span><span class="topic-agents">&rarr; Memory Agent</span></div>
-            <div class="topic-row"><span class="topic-name">travel/replan/#</span><span class="topic-agents">&rarr; Planning, Replanning</span></div>
-          </div>
-          <div class="solace-features">
-            <div class="solace-feat"><span class="solace-feat-icon">&#128274;</span>QoS: Guaranteed &amp; Direct Messaging</div>
-            <div class="solace-feat"><span class="solace-feat-icon">&#128257;</span>Event Replay</div>
-            <div class="solace-feat"><span class="solace-feat-icon">&#9889;</span>Low Latency Event Routing</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="arch-arrows">&#8595; &#8595; &#8595; &#8595;</div>
-
-      <!-- Layer 4: Agent Mesh -->
-      <div class="arch-layer">
-        <div class="arch-layer-header"><span class="lnum">4</span> Agent Mesh (&#x591A;&#x667A;&#x80FD;&#x9AD4;&#x5C64;)</div>
-        <div class="agent-grid">
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128204;</span><span class="agent-name">Planning Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/weather/#, ...</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128179;</span><span class="agent-name">Booking Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/booking/#</span>
-              <span class="agent-topic pub">&larr; booking/confirmed</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128065;</span><span class="agent-name">Monitoring Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/flight/#, ...</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128260;</span><span class="agent-name">Replanning Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/flight/#</span>
-              <span class="agent-topic pub">&larr; travel/replan/triggered</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128176;</span><span class="agent-name">Budget Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/booking/#</span>
-              <span class="agent-topic pub">&larr; budget/alert</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#128247;</span><span class="agent-name">Social Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/content/#</span>
-              <span class="agent-topic pub">&larr; social/post/done</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#127760;</span><span class="agent-name">Web Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/content/#</span>
-              <span class="agent-topic pub">&larr; web/deploy/done</span>
-            </div>
-          </div>
-          <div class="agent-card">
-            <div class="agent-card-head"><span class="agent-icon">&#129504;</span><span class="agent-name">Memory Agent</span></div>
-            <div class="agent-topics">
-              <span class="agent-topic sub">&rarr; travel/memory/#</span>
-              <span class="agent-topic pub">&larr; memory/updated</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="arch-arrows">&#8595; &#8595; &#8595; &#8595;</div>
-
-      <!-- Layer 5: Output -->
-      <div class="arch-layer">
-        <div class="arch-layer-header"><span class="lnum">5</span> Output Layer (&#x8F38;&#x51FA;&#x5C64;)</div>
-        <div class="output-grid">
-          <div class="output-node"><div class="output-node-icon">&#128276;</div>&#x4F7F;&#x7528;&#x8005;&#x63A8;&#x9001;&#x901A;&#x77E5;</div>
-          <div class="output-node"><div class="output-node-icon">&#128247;</div>IG/FB &#x793E;&#x7FA4;&#x767C;&#x4F48;</div>
-          <div class="output-node"><div class="output-node-icon">&#9729;</div>Cloudflare &#x90E8;&#x7F72;</div>
-          <div class="output-node"><div class="output-node-icon">&#129504;</div>&#x504F;&#x597D;&#x6A21;&#x578B;&#x66F4;&#x65B0;</div>
-        </div>
-      </div>
-
-      <!-- Topic Convention -->
-      <div class="topic-convention">
-        <div class="topic-conv-badge">Topic Convention: travel/{domain}/{event-type}</div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- Interactive Demo -->
-<section id="demo">
-  <div class="reveal">
-    <div class="section-tag">Interactive Demo</div>
-    <h2 class="section-title">Event Flow Simulation</h2>
-    <p class="section-desc">&#x9EDE;&#x64CA;&#x5DE6;&#x5074;&#x4E8B;&#x4EF6;&#x89F8;&#x767C;&#x5668;&#xFF0C;&#x89C0;&#x770B;&#x4E8B;&#x4EF6;&#x5982;&#x4F55;&#x7D93;&#x904E; Solace Platform &#x8DEF;&#x7531;&#x81F3;&#x5404; Agent &#x4E26;&#x7522;&#x51FA;&#x7D50;&#x679C;&#x3002;</p>
-  </div>
-  <div class="demo-wrap reveal">
-    <div class="demo-header">
-      <h3>Event Processing Pipeline</h3>
-      <div class="demo-status">System Online</div>
-    </div>
-    <div class="demo-body">
-      <div class="demo-triggers">
-        <h4>Trigger an Event</h4>
-        <button class="trigger-btn flight" onclick="triggerEvent('flight')">
-          <div class="t-icon">&#9992;</div>
-          <div class="t-text">
-            <span class="t-label">Flight Delay</span>
-            <span class="t-desc">BR123 delay 90min</span>
-          </div>
-        </button>
-        <button class="trigger-btn weather" onclick="triggerEvent('weather')">
-          <div class="t-icon">&#9748;</div>
-          <div class="t-text">
-            <span class="t-label">Weather Alert</span>
-            <span class="t-desc">Heavy rain in Shibuya</span>
-          </div>
-        </button>
-        <button class="trigger-btn crowd" onclick="triggerEvent('crowd')">
-          <div class="t-icon">&#128101;</div>
-          <div class="t-text">
-            <span class="t-label">Crowd Surge</span>
-            <span class="t-desc">Senso-ji &gt;85%</span>
-          </div>
-        </button>
-        <h4 style="margin-top:.5rem">Post-trip Events</h4>
-        <button class="trigger-btn content" onclick="triggerEvent('content')">
-          <div class="t-icon">&#128247;</div>
-          <div class="t-text">
-            <span class="t-label">Content Generate</span>
-            <span class="t-desc">Auto publish travel story</span>
-          </div>
-        </button>
-        <button class="trigger-btn learn" onclick="triggerEvent('learn')">
-          <div class="t-icon">&#129504;</div>
-          <div class="t-text">
-            <span class="t-label">Preference Learn</span>
-            <span class="t-desc">Update user model</span>
-          </div>
-        </button>
-      </div>
-      <div class="demo-flow" id="demoFlow">
-        <div class="flow-empty">
-          <span>&#8592;</span>
-          Click an event to start the simulation
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Roadmap -->
-<section id="roadmap">
-  <div class="reveal">
-    <div class="section-tag">Phased Roadmap</div>
-    <h2 class="section-title">4-Phase Execution Plan</h2>
-    <p class="section-desc">&#x5F9E;&#x884C;&#x524D;&#x5FEB;&#x901F;&#x843D;&#x5730;&#xFF0C;&#x5230;&#x884C;&#x4E2D;&#x5DEE;&#x7570;&#x5316;&#x6838;&#x5FC3;&#xFF0C;&#x518D;&#x5230;&#x9577;&#x671F;&#x58C1;&#x58D8;&#x3002;</p>
-  </div>
-  <div class="roadmap-grid reveal">
-    <div class="roadmap-card">
-      <div class="roadmap-phase">Phase 1 &#x2014; Quick Win</div>
-      <h3>&#x884C;&#x524D;&#x898F;&#x5283; + &#x9810;&#x8A02;</h3>
-      <ul class="roadmap-items">
-        <li>&#x4F7F;&#x7528;&#x8005;&#x610F;&#x5716;&#x89E3;&#x6790;</li>
-        <li>&#x884C;&#x7A0B;&#x751F;&#x6210;&#x8207;&#x512A;&#x5316;</li>
-        <li>&#x57FA;&#x672C; Agent &#x67B6;&#x69CB;</li>
-        <li>&#x9810;&#x7B97; / &#x504F;&#x597D;&#x5EFA;&#x6A21;</li>
-      </ul>
-    </div>
-    <div class="roadmap-card">
-      <div class="roadmap-phase">Phase 2 &#x2014; Core Differentiator</div>
-      <h3>&#x884C;&#x4E2D;&#x5373;&#x6642;&#x61C9;&#x8B8A;</h3>
-      <ul class="roadmap-items">
-        <li>Event-driven &#x67B6;&#x69CB;</li>
-        <li>&#x5373;&#x6642;&#x4E8B;&#x4EF6;&#x76E3;&#x63A7;</li>
-        <li>&#x52D5;&#x614B;&#x91CD;&#x898F;&#x5283;</li>
-        <li>&#x591A; Agent &#x5354;&#x4F5C;&#x6C7A;&#x7B56;</li>
-      </ul>
-    </div>
-    <div class="roadmap-card">
-      <div class="roadmap-phase">Phase 3 &#x2014; Expansion</div>
-      <h3>&#x81EA;&#x52D5;&#x5167;&#x5BB9;&#x751F;&#x6210;</h3>
-      <ul class="roadmap-items">
-        <li>&#x81EA;&#x52D5;&#x751F;&#x6210;&#x904A;&#x8A18;</li>
-        <li>IG / FB &#x793E;&#x7FA4;&#x6574;&#x5408;</li>
-        <li>Cloudflare &#x81EA;&#x52D5;&#x5EFA;&#x7AD9;</li>
-        <li>&#x5167;&#x5BB9; Agent &#x5354;&#x4F5C;</li>
-      </ul>
-    </div>
-    <div class="roadmap-card">
-      <div class="roadmap-phase">Phase 4 &#x2014; Long-term Moat</div>
-      <h3>&#x9577;&#x671F;&#x5B78;&#x7FD2;&#x7CFB;&#x7D71;</h3>
-      <ul class="roadmap-items">
-        <li>&#x4F7F;&#x7528;&#x8005;&#x8A18;&#x61B6;&#x7CFB;&#x7D71;</li>
-        <li>&#x500B;&#x4EBA;&#x5316;&#x65C5;&#x904A;&#x6A21;&#x578B;</li>
-        <li>&#x884C;&#x70BA;&#x5B78;&#x7FD2;&#x56DE;&#x994B;</li>
-        <li>&#x4E0B;&#x6B21;&#x65C5;&#x7A0B;&#x81EA;&#x52D5;&#x5EFA;&#x8B70;</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Phase 2 Deep Dive -->
-<section id="phase2">
-  <div class="reveal">
-    <div class="section-tag">Phase 2 Deep Dive</div>
-    <h2 class="section-title">6-8 Week Sprint Plan</h2>
-    <p class="section-desc">Phase 2 &#x5373;&#x6642;&#x61C9;&#x8B8A;&#x7CFB;&#x7D71;&#x7684;&#x8A73;&#x7D30;&#x57F7;&#x884C;&#x7BC0;&#x594F;&#x3002;&#x50C5;&#x805A;&#x7126; 3 &#x985E;&#x4E8B;&#x4EF6;&#xFF0C;1-2 &#x500B;&#x57CE;&#x5E02;&#x3002;</p>
-  </div>
-  <div class="sprint-grid reveal">
-    <div class="sprint-card">
-      <div class="sprint-week">WEEK 1-2</div>
-      <h3>Foundation / Event Infrastructure</h3>
-      <ul class="sprint-items">
-        <li>&#x5B9A;&#x7FA9; Event Schema (v1)</li>
-        <li>&#x5EFA;&#x7ACB; Solace Topics &#x7D50;&#x69CB;</li>
-        <li>&#x5BE6;&#x4F5C;&#x57FA;&#x672C; Micro-Integrations (Mock)</li>
-        <li>&#x642D;&#x5EFA; CI/CD Pipeline</li>
-      </ul>
-    </div>
-    <div class="sprint-card">
-      <div class="sprint-week">WEEK 3-4</div>
-      <h3>Core Intelligence</h3>
-      <ul class="sprint-items">
-        <li>Replanning Agent &#x6838;&#x5FC3;&#x908F;&#x8F2F;</li>
-        <li>Context Agent &#x4F7F;&#x7528;&#x8005;&#x504F;&#x597D;</li>
-        <li>Constraint Solver (&#x6642;&#x9593;/&#x9810;&#x7B97;)</li>
-        <li>POI Search + RAG &#x6574;&#x5408;</li>
-      </ul>
-    </div>
-    <div class="sprint-card">
-      <div class="sprint-week">WEEK 5-6</div>
-      <h3>Notification &amp; UI</h3>
-      <ul class="sprint-items">
-        <li>Notification Agent &#x5BE6;&#x4F5C;</li>
-        <li>&#x6700;&#x5C0F;&#x53EF;&#x7528; UI (Accept/Reject/Modify)</li>
-        <li>Human-in-the-loop &#x6D41;&#x7A0B;</li>
-        <li>Push / Chat &#x901A;&#x77E5;&#x6574;&#x5408;</li>
-      </ul>
-    </div>
-    <div class="sprint-card">
-      <div class="sprint-week">WEEK 7-8</div>
-      <h3>Real-world &amp; Stress Test</h3>
-      <ul class="sprint-items">
-        <li>&#x771F;&#x5BE6; API &#x63A5;&#x5165;</li>
-        <li>&#x58D3;&#x529B;&#x6E2C;&#x8A66;&#x8207;&#x5EF6;&#x9072;&#x512A;&#x5316;</li>
-        <li>Fallback &#x6A5F;&#x5236;&#x9A57;&#x8B49;</li>
-        <li>End-to-end &#x6574;&#x5408;&#x6E2C;&#x8A66;</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- Tech Stack -->
-<section id="tech">
-  <div class="reveal">
-    <div class="section-tag">Technology</div>
-    <h2 class="section-title">Tech Stack &amp; Reliability</h2>
-    <p class="section-desc">&#x52D9;&#x5BE6;&#x9078;&#x578B;&#xFF0C;&#x805A;&#x7126;&#x53EF;&#x9760;&#x6027;&#x8207;&#x4F4E;&#x5EF6;&#x9072;&#x3002;</p>
-  </div>
-  <div class="tech-grid reveal">
-    <div class="tech-card">
-      <div class="tech-cat">Event Infrastructure</div>
-      <ul class="tech-items">
-        <li>Solace PubSub+ (Event Mesh)</li>
-        <li>Solace Agent Mesh</li>
-        <li>Solace Micro-Integrations</li>
-      </ul>
-    </div>
-    <div class="tech-card">
-      <div class="tech-cat">Compute &amp; Deploy</div>
-      <ul class="tech-items">
-        <li>Cloudflare Workers / Durable Objects</li>
-        <li>GitHub Copilot SDK</li>
-        <li>Cloudflare MCP</li>
-      </ul>
-    </div>
-    <div class="tech-card">
-      <div class="tech-cat">AI / Intelligence</div>
-      <ul class="tech-items">
-        <li>LLM with Tool Calling</li>
-        <li>RAG (POI / Itinerary)</li>
-        <li>Multi-Agent Orchestration</li>
-        <li>Rule + AI Hybrid</li>
-      </ul>
-    </div>
-    <div class="tech-card">
-      <div class="tech-cat">Data Layer</div>
-      <ul class="tech-items">
-        <li>Redis (Cache / State)</li>
-        <li>Vector DB (Preferences / Locations)</li>
-        <li>Durable State (Long-term Memory)</li>
-      </ul>
-    </div>
-    <div class="tech-card">
-      <div class="tech-cat">Reliability</div>
-      <ul class="tech-items">
-        <li>Retry / Exponential Backoff (3x)</li>
-        <li>Idempotency (event_id dedup)</li>
-        <li>Timeout + Rule-based Fallback</li>
-        <li>Human-in-the-loop Approval</li>
-      </ul>
-    </div>
-    <div class="tech-card">
-      <div class="tech-cat">Risks &amp; Mitigation</div>
-      <ul class="tech-items">
-        <li>API &#x4E0D;&#x7A69; &rarr; Cache + Fallback</li>
-        <li>LLM &#x5EF6;&#x9072; &rarr; Precompute + Heuristics</li>
-        <li>&#x5EFA;&#x8B70;&#x54C1;&#x8CEA; &rarr; Rule + AI Hybrid</li>
-        <li>Data Silo &rarr; Micro-Integrations</li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- External Resources -->
-<section id="resources">
-  <div class="reveal">
-    <div class="section-tag">External Resources</div>
-    <h2 class="section-title">Ready-to-Integrate APIs</h2>
-    <p class="section-desc">MVP 所需的外部資料源均有成熟的商業 API 可直接整合，無需重複造輪子。</p>
-  </div>
-  <div class="res-grid reveal">
-    <div class="res-card">
-      <div class="res-cat">&#9992; Flight Status APIs</div>
-      <ul class="res-items">
-        <li class="res-item">
-          <span class="res-item-name">FlightAware AeroAPI</span>
-          <span class="res-item-desc">即時航班追蹤與 Webhook 推播</span>
-          <a class="res-item-link" href="https://flightaware.com/commercial/aeroapi/" target="_blank">flightaware.com/commercial/aeroapi</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">Cirium</span>
-          <span class="res-item-desc">企業級全球航班狀態與歷史準點率數據</span>
-          <a class="res-item-link" href="https://www.cirium.com/" target="_blank">cirium.com</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">Aviationstack</span>
-          <span class="res-item-desc">輕量 REST API，適合 MVP 快速驗證</span>
-          <a class="res-item-link" href="https://aviationstack.com/" target="_blank">aviationstack.com</a>
-        </li>
-      </ul>
-    </div>
-    <div class="res-card">
-      <div class="res-cat">&#9748; Real-time Weather APIs</div>
-      <ul class="res-items">
-        <li class="res-item">
-          <span class="res-item-name">Tomorrow.io</span>
-          <span class="res-item-desc">超高解析度與分鐘級即時天氣及警報</span>
-          <a class="res-item-link" href="https://www.tomorrow.io/weather-api/" target="_blank">tomorrow.io/weather-api</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">OpenWeatherMap</span>
-          <span class="res-item-desc">即時天氣、分鐘級降雨與極端天氣警報</span>
-          <a class="res-item-link" href="https://openweathermap.org/api" target="_blank">openweathermap.org/api</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">Apple WeatherKit</span>
-          <span class="res-item-desc">精準在地天氣預測與即時警報</span>
-          <a class="res-item-link" href="https://developer.apple.com/weatherkit/" target="_blank">developer.apple.com/weatherkit</a>
-        </li>
-      </ul>
-    </div>
-    <div class="res-card">
-      <div class="res-cat">&#128101; Crowd Level &amp; POI APIs</div>
-      <ul class="res-items">
-        <li class="res-item">
-          <span class="res-item-name">Google Maps Places API</span>
-          <span class="res-item-desc">即時擁擠度 (Current Popularity) 與營業時間</span>
-          <a class="res-item-link" href="https://developers.google.com/maps/documentation/places/web-service" target="_blank">developers.google.com/maps/.../places</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">BestTime.app</span>
-          <span class="res-item-desc">景點、商場與餐廳的人潮預測與即時擁擠度</span>
-          <a class="res-item-link" href="https://besttime.app/" target="_blank">besttime.app</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">PredictHQ</span>
-          <span class="res-item-desc">城市級即時事件與大型活動數據</span>
-          <a class="res-item-link" href="https://www.predicthq.com/" target="_blank">predicthq.com</a>
-        </li>
-      </ul>
-    </div>
-    <div class="res-card">
-      <div class="res-cat">&#128663; Routing &amp; Transit APIs</div>
-      <ul class="res-items">
-        <li class="res-item">
-          <span class="res-item-name">Google Maps Routes API</span>
-          <span class="res-item-desc">即時交通時間與大眾運輸替代方案</span>
-          <a class="res-item-link" href="https://developers.google.com/maps/documentation/routes" target="_blank">developers.google.com/maps/.../routes</a>
-        </li>
-        <li class="res-item">
-          <span class="res-item-name">Navitime API</span>
-          <span class="res-item-desc">日本在地交通與路線規劃 (Tokyo MVP 首選)</span>
-          <a class="res-item-link" href="https://api-sdk.navitime.co.jp/" target="_blank">api-sdk.navitime.co.jp</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="cta">
-  <div class="reveal">
-    <div class="section-tag">Conclusion</div>
-    <h2 class="section-title">一個系統工程問題，而我們已經有解法</h2>
-    <p class="cta-quote">
-      <span>Event-driven Agent Ecosystem</span><br>
-      透過 Solace Platform 串聯所有 Agent，打造完整旅程的智慧應變系統。
+    <h1>Itinerary in Motion</h1>
+    <p class="lead">
+      Your itinerary listens to the world and re-plans itself in seconds. A flight-change event flows
+      through the Solace Event Broker, the EventMesh Gateway invokes a Solace Agent Mesh orchestrator,
+      and a fleet of specialist agents collaborates to deliver a proactive re-plan to each traveler's
+      phone.
     </p>
-    <p style="color:var(--text-dim);max-width:550px;margin:0 auto 2rem;font-size:.95rem">
-      AI 模型能力已到位，關鍵在於：系統整合、架構設計、可靠性工程。<br>
-      Solace Platform 提供了事件路由、Agent 協作、資料接入的完整解決方案。
-    </p>
-    <div class="section-tag">Key Decisions Needed</div>
-    <div class="cta-decisions">
-      <div class="cta-decision">
-        <h4>Target City</h4>
-        <p>MVP &#x7B2C;&#x4E00;&#x500B;&#x57CE;&#x5E02;<br>(&#x5EFA;&#x8B70; Tokyo)</p>
+
+    <section class="cards">
+      <div class="card">
+        <h3>What it is</h3>
+        <p>An Agentic AI personal travel assistant built on Solace Agent Mesh Enterprise and Solace Event Broker.</p>
       </div>
-      <div class="cta-decision">
-        <h4>Priority Events</h4>
-        <p>Flight Delay + Weather<br>(MVP &#x5148;&#x505A; 2 &#x985E;)</p>
+      <div class="card">
+        <h3>The headline moment</h3>
+        <p>One flight delay event triggers a per-traveler replan card on three audience phones within seconds.</p>
       </div>
-      <div class="cta-decision">
-        <h4>UI Format</h4>
-        <p>Chat vs App<br>(&#x5F71;&#x97FF; UX &#x6295;&#x8CC7;)</p>
+      <div class="card">
+        <h3>What this page is</h3>
+        <p>A static, offline reference of the runtime topology. No CDN — every asset lives in <code>diagram-pages/</code>.</p>
+      </div>
+    </section>
+
+    <h2>Runtime architecture</h2>
+    <div class="diagram">
+      <svg class="canvas" viewBox="0 0 1400 920" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="cardShadow" x="-10%" y="-10%" width="120%" height="130%">
+            <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0B2A44" flood-opacity="0.10"/>
+          </filter>
+          <linearGradient id="brokerGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0"   stop-color="#0E4D78"/>
+            <stop offset="1"   stop-color="#093B5F"/>
+          </linearGradient>
+          <marker id="ah-inbound"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#E25B5B"/>
+          </marker>
+          <marker id="ah-outbound" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#00C895"/>
+          </marker>
+          <marker id="ah-ink"      viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#0B2A44"/>
+          </marker>
+        </defs>
+
+        <!-- ===== Row A: Production source chain (left) & Sinks (right) ===== -->
+        <!-- Cards use a vertical layout (eyebrow, centered icon, two-line title) so labels never collide. -->
+
+        <!-- Flight Change Signal (upstream producer) -->
+        <g>
+          <rect class="surface" x="30" y="30" width="150" height="150" rx="14"/>
+          <text class="t-eyebrow" x="105" y="54" text-anchor="middle">Upstream</text>
+          <rect class="icon-tile" x="79" y="66" width="52" height="52" rx="10"/>
+          <image href="assets/svg/signal.svg" x="87" y="74" width="36" height="36"/>
+          <text class="t-name" x="105" y="138" text-anchor="middle">Flight Change</text>
+          <text class="t-name" x="105" y="156" text-anchor="middle">Signal</text>
+        </g>
+
+        <!-- NATS (in-house transport) -->
+        <g>
+          <rect class="surface" x="210" y="30" width="130" height="150" rx="14"/>
+          <text class="t-eyebrow" x="275" y="54" text-anchor="middle">Transport</text>
+          <rect class="icon-tile" x="249" y="66" width="52" height="52" rx="10"/>
+          <image href="assets/svg/nats.svg" x="257" y="74" width="36" height="36"/>
+          <text class="t-name" x="275" y="138" text-anchor="middle" style="font-size:16px">NATS</text>
+          <text class="t-sub"  x="275" y="156" text-anchor="middle">in-house pub/sub</text>
+        </g>
+
+        <!-- Micro-Integration (bridge) -->
+        <g>
+          <rect class="surface" x="370" y="30" width="170" height="150" rx="14"/>
+          <text class="t-eyebrow" x="455" y="54" text-anchor="middle">Bridge</text>
+          <rect class="icon-tile" x="429" y="66" width="52" height="52" rx="10"/>
+          <image href="assets/svg/mi-bridge.svg" x="437" y="74" width="36" height="36"/>
+          <text class="t-name" x="455" y="138" text-anchor="middle">Micro-Integration</text>
+          <text class="t-sub"  x="455" y="156" text-anchor="middle">NATS → Solace topic</text>
+        </g>
+
+        <!-- Phones (sinks) -->
+        <g>
+          <!-- Traveler A -->
+          <rect class="surface accent" x="1010" y="22" width="116" height="160" rx="18"/>
+          <rect x="1024" y="36" width="88" height="128" rx="10" fill="#0B2A44"/>
+          <image href="assets/svg/phone.svg" x="1036" y="50" width="64" height="100"/>
+          <text class="t-sub" x="1068" y="200" text-anchor="middle">Traveler A</text>
+          <!-- Traveler B -->
+          <rect class="surface accent" x="1140" y="22" width="116" height="160" rx="18"/>
+          <rect x="1154" y="36" width="88" height="128" rx="10" fill="#0B2A44"/>
+          <image href="assets/svg/phone.svg" x="1166" y="50" width="64" height="100"/>
+          <text class="t-sub" x="1198" y="200" text-anchor="middle">Traveler B</text>
+          <!-- Traveler C -->
+          <rect class="surface accent" x="1270" y="22" width="116" height="160" rx="18"/>
+          <rect x="1284" y="36" width="88" height="128" rx="10" fill="#0B2A44"/>
+          <image href="assets/svg/phone.svg" x="1296" y="50" width="64" height="100"/>
+          <text class="t-sub" x="1328" y="200" text-anchor="middle">Traveler C</text>
+
+          <!-- solclientjs badge -->
+          <rect class="icon-tile" x="1098" y="216" width="200" height="36" rx="10"/>
+          <image href="assets/svg/solclientjs.svg" x="1108" y="222" width="32" height="24"/>
+          <text class="t-sub" x="1148" y="240">solclientjs · WebSocket</text>
+        </g>
+
+        <!-- ===== Row B: Broker (white panel, lightly tinted, green accent border) ===== -->
+
+        <g>
+          <rect class="surface feature" x="380" y="240" width="640" height="190" rx="18"/>
+          <rect class="icon-tile accent" x="404" y="262" width="58" height="58" rx="12"/>
+          <image href="assets/svg/event-broker.svg" x="412" y="268" width="42" height="42"/>
+          <text class="t-eyebrow" x="480" y="278">Backbone</text>
+          <text class="t-title"   x="480" y="300">Solace Event Broker</text>
+          <text class="t-sub"     x="480" y="318">single source of truth · pub/sub fabric</text>
+
+          <!-- Inbound topic pill -->
+          <rect class="pill inbound" x="404" y="338" width="592" height="34" rx="17" fill="#FFFFFF"/>
+          <text class="t-eyebrow" x="420" y="360" style="fill:#E25B5B">Inbound</text>
+          <text class="t-mono"    x="495" y="360">D/changes/flight/{carrier}/{flight_no}/{event_type}</text>
+
+          <!-- Outbound topic pill -->
+          <rect class="pill" x="404" y="380" width="592" height="34" rx="17" fill="#FFFFFF"/>
+          <text class="t-eyebrow" x="420" y="402">Outbound</text>
+          <text class="t-mono"    x="500" y="402">D/res/{traveler_id}/{ok|ng}</text>
+        </g>
+
+        <!-- ===== Edges: Production source chain ↔ Broker ===== -->
+
+        <!-- Signal → NATS -->
+        <path class="edge inbound" d="M 180,92 H 210" marker-end="url(#ah-inbound)"/>
+        <!-- NATS → MI -->
+        <path class="edge inbound" d="M 340,92 H 370" marker-end="url(#ah-inbound)"/>
+        <!-- MI → Broker (down into broker top) -->
+        <path class="edge inbound" d="M 455,180 V 240" marker-end="url(#ah-inbound)"/>
+        <text class="t-edge inbound" x="465" y="214">flight-change</text>
+
+        <!-- Broker → Phones (orthogonal fan-out from broker right edge) -->
+        <path class="edge outbound" d="M 1020,300 H 1068 V 182" marker-end="url(#ah-outbound)"/>
+        <path class="edge outbound" d="M 1020,320 H 1198 V 182" marker-end="url(#ah-outbound)"/>
+        <path class="edge outbound" d="M 1020,340 H 1328 V 182" marker-end="url(#ah-outbound)"/>
+        <text class="t-edge outbound" x="1175" y="270" text-anchor="middle">per-traveler reply</text>
+
+        <!-- ===== Row C: EventMesh Gateway ===== -->
+
+        <g>
+          <rect class="surface feature" x="540" y="470" width="320" height="100" rx="14"/>
+          <rect class="icon-tile accent" x="558" y="488" width="56" height="56" rx="12"/>
+          <image href="assets/svg/gateway.svg" x="566" y="496" width="40" height="40"/>
+          <text class="t-eyebrow" x="630" y="500">Bridge</text>
+          <text class="t-name"    x="630" y="520">EventMesh Gateway</text>
+          <text class="t-sub"     x="630" y="538">broker topic → A2A invocation</text>
+          <text class="t-sub"     x="630" y="554">forward_context · template SAC</text>
+        </g>
+
+        <!-- Broker ↔ Gateway (paired vertical edges) -->
+        <path class="edge inbound"  d="M 660,430 V 470" marker-end="url(#ah-inbound)"/>
+        <text class="t-edge inbound" x="668" y="455">consume</text>
+        <path class="edge outbound" d="M 740,470 V 430" marker-end="url(#ah-outbound)"/>
+        <text class="t-edge outbound" x="748" y="455">publish reply</text>
+
+        <!-- ===== Row D: SAM Enterprise ===== -->
+
+        <g>
+          <rect class="surface dashed" x="40" y="610" width="1320" height="290" rx="20"/>
+          <text class="t-eyebrow" x="62" y="638">Agent Mesh</text>
+          <text class="t-title"   x="62" y="660">Solace Agent Mesh Enterprise</text>
+          <text class="t-sub"     x="62" y="678">orchestrator + specialist agents collaborating over A2A</text>
+
+          <!-- Orchestrator (featured, centered top) -->
+          <rect class="surface feature" x="560" y="640" width="280" height="100" rx="14"/>
+          <rect class="icon-tile accent" x="578" y="658" width="56" height="56" rx="12"/>
+          <image href="assets/svg/orchestrator.svg" x="586" y="666" width="40" height="40"/>
+          <text class="t-eyebrow" x="650" y="670">Lead</text>
+          <text class="t-name"    x="650" y="690">OrchestratorAgent</text>
+          <text class="t-sub"     x="650" y="708">fan-out · evidence aggregation</text>
+          <text class="t-sub"     x="650" y="724">synthesizes phone-friendly reply</text>
+
+          <!-- Specialists row -->
+          <!-- FlightsAgent -->
+          <g>
+            <rect class="surface" x="80" y="790" width="280" height="100" rx="14"/>
+            <rect class="icon-tile" x="98" y="808" width="48" height="48" rx="10"/>
+            <image href="assets/svg/agent.svg" x="104" y="814" width="36" height="36"/>
+            <text class="t-eyebrow" x="160" y="816">Specialist</text>
+            <text class="t-name"    x="160" y="836">FlightsAgent</text>
+            <text class="t-sub"     x="160" y="854">lookup_flight</text>
+            <text class="t-sub"     x="160" y="870">mock JSON fixture</text>
+          </g>
+          <!-- WeatherAgent -->
+          <g>
+            <rect class="surface" x="400" y="790" width="280" height="100" rx="14"/>
+            <rect class="icon-tile" x="418" y="808" width="48" height="48" rx="10"/>
+            <image href="assets/svg/weather.svg" x="424" y="814" width="36" height="36"/>
+            <text class="t-eyebrow" x="480" y="816">Specialist</text>
+            <text class="t-name"    x="480" y="836">WeatherAgent</text>
+            <text class="t-sub"     x="480" y="854">SQL plugin · weather.db</text>
+            <text class="t-sub"     x="480" y="870">+ shared time_tool</text>
+          </g>
+          <!-- ItineraryAgent -->
+          <g>
+            <rect class="surface" x="720" y="790" width="280" height="100" rx="14"/>
+            <rect class="icon-tile" x="738" y="808" width="48" height="48" rx="10"/>
+            <image href="assets/svg/itinerary.svg" x="744" y="814" width="36" height="36"/>
+            <text class="t-eyebrow" x="800" y="816">Specialist</text>
+            <text class="t-name"    x="800" y="836">ItineraryAgent</text>
+            <text class="t-sub"     x="800" y="854">per-traveler SQL plugin</text>
+            <text class="t-sub"     x="800" y="870">itinerary.db</text>
+          </g>
+          <!-- ImagesAgent -->
+          <g>
+            <rect class="surface" x="1040" y="790" width="280" height="100" rx="14"/>
+            <rect class="icon-tile" x="1058" y="808" width="48" height="48" rx="10"/>
+            <image href="assets/svg/images-agent.svg" x="1064" y="814" width="36" height="36"/>
+            <text class="t-eyebrow" x="1120" y="816">Specialist</text>
+            <text class="t-name"    x="1120" y="836">ImagesAgent</text>
+            <text class="t-sub"     x="1120" y="854">Pixabay-backed tool</text>
+            <text class="t-sub"     x="1120" y="870">destination hero images</text>
+          </g>
+
+          <!-- A2A fan-out bus from Orchestrator -->
+          <path class="edge bus" d="M 700,740 V 770"/>
+          <path class="edge bus" d="M 220,770 H 1180"/>
+          <path class="edge bus" d="M 220,770 V 790"/>
+          <path class="edge bus" d="M 540,770 V 790"/>
+          <path class="edge bus" d="M 860,770 V 790"/>
+          <path class="edge bus" d="M 1180,770 V 790"/>
+          <text class="t-edge" x="1190" y="765">A2A</text>
+        </g>
+
+        <!-- Gateway → Orchestrator (A2A entry) -->
+        <path class="edge" stroke="#0B2A44" d="M 700,570 V 610 M 700,610 V 640" marker-end="url(#ah-ink)"/>
+        <text class="t-edge" x="710" y="600">invoke</text>
+      </svg>
+
+      <div class="legend">
+        <div><span class="swatch inbound"></span>Inbound chaos topic <code>D/changes/flight/...</code></div>
+        <div><span class="swatch outbound"></span>Outbound per-traveler reply <code>D/res/{traveler_id}/...</code></div>
+        <div><span class="swatch bus"></span>A2A invocation across SAM</div>
       </div>
     </div>
-  </div>
-</section>
 
-<footer>
-  <div class="footer-brand">
-    <div class="footer-brand-icon">S</div>
-    Solace Platform
-  </div>
-  <div class="footer-text">Designed for Agentic AI Travel System. All logic routes through Solace.</div>
-  <div class="footer-text">&copy; 2026 Confidential</div>
-</footer>
+    <div class="section-head">
+      <h2>End-to-end flow</h2>
+      <a class="detail-link" href="runbook.html">Click for detail <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="flow">
+      <div class="step">
+        <span class="n">1</span>
+        <h4>Audience joins</h4>
+        <p>Three phones scan kiosk QR codes and bind to their own traveler_id.</p>
+      </div>
+      <div class="step">
+        <span class="n">2</span>
+        <h4>Signal arrives</h4>
+        <p>Airline ops feed emits a flight-change signal onto a NATS subject (today: Kiosk chaos button stands in).</p>
+      </div>
+      <div class="step">
+        <span class="n">3</span>
+        <h4>MI bridges to Solace</h4>
+        <p>The Micro-Integration republishes onto <code>D/changes/flight/...</code> on the Solace broker.</p>
+      </div>
+      <div class="step">
+        <span class="n">4</span>
+        <h4>Agents collaborate</h4>
+        <p>Gateway invokes Orchestrator; it fans out to Flights, Weather, Itinerary, Images.</p>
+      </div>
+      <div class="step">
+        <span class="n">5</span>
+        <h4>Targeted replan</h4>
+        <p>Only the affected traveler's phone renders the new card via solclientjs.</p>
+      </div>
+    </div>
 
-<script>
-// Nav
-const nav = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 50);
-});
-
-// Scroll reveal
-const revealEls = document.querySelectorAll('.reveal');
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-revealEls.forEach(el => revealObs.observe(el));
-
-// Event flow data
-const flowData = {
-  flight: {
-    title: 'Flow 1: Flight Delay Response',
-    color: 'var(--flight)',
-    steps: [
-      { agent: 'FLIGHT INTEGRATION', msg: 'Event: BR123 delayed 90 minutes', topic: 'flight/status/delayed', delay: 0 },
-      { agent: 'SOLACE PLATFORM', msg: 'Routing to Monitoring Agent + Replanning Agent (parallel)', delay: 600 },
-      { agent: 'MONITORING AGENT', msg: 'Confirmed delay impact, triggering recompute', topic: 'travel/replan/triggered', delay: 1200 },
-      { agent: 'REPLANNING AGENT', msg: 'Generating alternative itinerary...', delay: 1800 },
-      { agent: 'PLANNING AGENT', msg: 'Rebuilding day schedule with new constraints', delay: 2400 },
-      { agent: 'NOTIFICATION AGENT', msg: 'Pushing updated itinerary to user', delay: 3200 },
-    ],
-    result: {
-      title: '&#10003; Alternative Itinerary (3.8s)',
-      body: 'Original: Airport &rarr; Tsukiji (breakfast) &rarr; Asakusa &rarr; Akihabara<br>Revised: Airport &rarr; Hotel Check-in &rarr; Asakusa (morning) &rarr; Tsukiji (lunch) &rarr; Akihabara<br><br>Confidence: 82% &middot; User action: Accept / Reject / Modify'
-    }
-  },
-  weather: {
-    title: 'Flow 1: Weather Alert Response',
-    color: 'var(--weather)',
-    steps: [
-      { agent: 'WEATHER INTEGRATION', msg: 'Alert: Heavy rain in Shibuya 14:00-18:00', topic: 'weather/alert/rain', delay: 0 },
-      { agent: 'SOLACE PLATFORM', msg: 'Routing to Planning + Monitoring Agent', delay: 500 },
-      { agent: 'MONITORING AGENT', msg: 'Outdoor activities at risk, triggering recompute', topic: 'travel/replan/triggered', delay: 1100 },
-      { agent: 'REPLANNING AGENT', msg: 'Searching indoor alternatives near Shibuya...', delay: 1700 },
-      { agent: 'PLANNING AGENT', msg: 'Rebuilding afternoon schedule', delay: 2400 },
-      { agent: 'NOTIFICATION AGENT', msg: 'Sending 3 indoor alternatives to user', delay: 3000 },
-    ],
-    result: {
-      title: '&#10003; Indoor Alternatives Ready (3.4s)',
-      body: 'Option A: TeamLab Borderless (Art) &mdash; 15 min walk<br>Option B: Shibuya Sky Observatory &mdash; 8 min walk<br>Option C: Underground Shopping &mdash; 5 min walk<br><br>Confidence: 78% &middot; User action: Accept / Reject / Modify'
-    }
-  },
-  crowd: {
-    title: 'Flow 1: Crowd Surge Response',
-    color: 'var(--crowd)',
-    steps: [
-      { agent: 'TRAFFIC INTEGRATION', msg: 'Senso-ji capacity at 87%, est. wait: 75 min', topic: 'traffic/congestion/high', delay: 0 },
-      { agent: 'SOLACE PLATFORM', msg: 'Routing to Monitoring + Replanning Agent', delay: 500 },
-      { agent: 'MONITORING AGENT', msg: 'Threshold exceeded (>80%), evaluating swap', topic: 'travel/replan/triggered', delay: 1000 },
-      { agent: 'REPLANNING AGENT', msg: 'Found: visit at 17:30 (predicted 45% capacity)', delay: 1600 },
-      { agent: 'PLANNING AGENT', msg: 'Inserting Sumida River walk to fill gap', delay: 2200 },
-      { agent: 'NOTIFICATION AGENT', msg: 'Suggesting optimized schedule', delay: 2800 },
-    ],
-    result: {
-      title: '&#10003; Schedule Optimized (3.1s)',
-      body: 'Swap: Move Senso-ji 15:00 &rarr; 17:30 (crowd drops to ~45%)<br>Fill gap: Sumida River Walk + Asahi Beer Hall (10 min away)<br><br>Confidence: 85% &middot; Time saved: ~60 min queuing'
-    }
-  },
-  content: {
-    title: 'Flow 2: Auto Content Generation',
-    color: 'var(--content)',
-    steps: [
-      { agent: 'USER ACTION', msg: 'User authorizes: "Generate my travel story"', topic: 'travel/content/generate', delay: 0 },
-      { agent: 'SOLACE PLATFORM', msg: 'Routing to Social Agent + Web Agent (parallel)', delay: 500 },
-      { agent: 'SOCIAL AGENT', msg: 'Generating IG/FB post from trip photos & highlights', delay: 1200 },
-      { agent: 'SOCIAL AGENT', msg: 'Published to Instagram & Facebook', topic: 'social/post/done', delay: 2000 },
-      { agent: 'WEB AGENT', msg: 'Generating travel blog website via Cloudflare MCP', delay: 2600 },
-      { agent: 'WEB AGENT', msg: 'Deployed to Cloudflare Pages', topic: 'web/deploy/done', delay: 3400 },
-      { agent: 'MEMORY AGENT', msg: 'Recording content preferences for future trips', delay: 3800 },
-    ],
-    result: {
-      title: '&#10003; Content Published (4.2s)',
-      body: 'IG Post: "3 Days in Tokyo" with curated photos<br>FB: Cross-posted with extended captions<br>Website: tokyo-trip-2026.pages.dev deployed<br><br>Memory Agent: Learned user prefers cultural content style'
-    }
-  },
-  learn: {
-    title: 'Flow 3: Preference Learning',
-    color: 'var(--learn)',
-    steps: [
-      { agent: 'USER BEHAVIOR', msg: 'Detected: User rejected crowded spots 3 times, preferred late mornings', topic: 'travel/memory/behavior', delay: 0 },
-      { agent: 'SOLACE PLATFORM', msg: 'Routing to Memory Agent', delay: 500 },
-      { agent: 'MEMORY AGENT', msg: 'Analyzing behavior patterns across trip history...', delay: 1100 },
-      { agent: 'MEMORY AGENT', msg: 'Updated preference model: crowd_tolerance=low, wake_time=late', topic: 'memory/updated', delay: 1900 },
-      { agent: 'PLANNING AGENT', msg: 'Applying updated preferences to future trip templates', delay: 2500 },
-    ],
-    result: {
-      title: '&#10003; Preference Model Updated (2.8s)',
-      body: 'New preferences detected:<br>- Crowd tolerance: Low (avoid >60% capacity)<br>- Morning preference: Late start (after 10:00)<br>- Dining: Local izakaya over tourist restaurants<br><br>Next trip will auto-apply these preferences'
-    }
-  }
-};
-
-let isAnimating = false;
-
-function triggerEvent(type) {
-  if (isAnimating) return;
-  isAnimating = true;
-  const flow = document.getElementById('demoFlow');
-  const data = flowData[type];
-  flow.innerHTML = '';
-
-  const container = document.createElement('div');
-  container.className = 'flow-event';
-  const header = document.createElement('div');
-  header.style.cssText = `font-family:'JetBrains Mono',monospace;font-size:.72rem;color:${data.color};margin-bottom:1rem;letter-spacing:.06em;font-weight:600`;
-  header.textContent = `[ ${data.title.toUpperCase()} ]`;
-  container.appendChild(header);
-  flow.appendChild(container);
-
-  data.steps.forEach((step, i) => {
-    setTimeout(() => {
-      const stepEl = document.createElement('div');
-      stepEl.className = 'flow-step';
-      const dot = document.createElement('div');
-      dot.className = 'flow-dot active';
-      stepEl.appendChild(dot);
-      const content = document.createElement('div');
-      content.className = 'flow-content';
-      const agent = document.createElement('div');
-      agent.className = 'flow-agent';
-      agent.textContent = step.agent;
-      content.appendChild(agent);
-      const msg = document.createElement('div');
-      msg.className = 'flow-msg';
-      msg.textContent = step.msg;
-      content.appendChild(msg);
-      if (step.topic) {
-        const topic = document.createElement('div');
-        topic.className = 'flow-topic';
-        topic.textContent = step.topic;
-        content.appendChild(topic);
-      }
-      stepEl.appendChild(content);
-      container.appendChild(stepEl);
-      const allDots = container.querySelectorAll('.flow-dot');
-      allDots.forEach((d, j) => { if (j < allDots.length - 1) d.className = 'flow-dot done'; });
-      flow.scrollTop = flow.scrollHeight;
-
-      if (i === data.steps.length - 1) {
-        setTimeout(() => {
-          const lastDot = container.querySelector('.flow-dot.active');
-          if (lastDot) lastDot.className = 'flow-dot done';
-          const result = document.createElement('div');
-          result.className = 'flow-result';
-          result.innerHTML = `<h4>${data.result.title}</h4><p>${data.result.body}</p>`;
-          container.appendChild(result);
-          flow.scrollTop = flow.scrollHeight;
-          isAnimating = false;
-        }, 800);
-      }
-    }, step.delay);
-  });
-}
-</script>
+    <footer>
+      <span>Sponsor: Solace · Brand assets © Solace Corporation</span>
+      <span>Static page · no CDN · sources under <code>diagram-pages/</code></span>
+    </footer>
+  </main>
 </body>
 </html>
