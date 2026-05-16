@@ -1,0 +1,104 @@
+traveler:
+  user_id: "demo-traveler-001"
+  name: "Hsiao-Hua Chen"
+  home_city: "Taipei"
+
+trip:
+  origin_city: "San Francisco"
+  origin_iata: "SFO"
+  destination_city: "Tokyo"
+  destination_iata: "NRT"
+  start_date: "2026-05-13"
+  end_date: "2026-05-17"
+
+flights:
+  - flight_no: "JL001"
+    carrier: "Japan Airlines"
+    origin: "SFO"
+    destination: "NRT"
+    scheduled_departure: "2026-05-13T11:00:00-07:00"
+    scheduled_arrival: "2026-05-14T15:30:00+09:00"
+    status: "ON_TIME"
+    gate: "A8"
+    aircraft: "Boeing 787-9"
+  - flight_no: "JL002"
+    carrier: "Japan Airlines"
+    origin: "NRT"
+    destination: "SFO"
+    scheduled_departure: "2026-05-17T18:00:00+09:00"
+    scheduled_arrival: "2026-05-17T11:30:00-07:00"
+    status: "ON_TIME"
+    gate: "B12"
+    aircraft: "Boeing 787-9"
+
+itinerary:
+  - day: 1
+    date: "2026-05-14"
+    city: "Tokyo"
+    activities:
+      - time: "16:00"
+        title: "Hotel check-in"
+        location: "Shinjuku Granbell Hotel"
+        type: "lodging"
+      - time: "19:00"
+        title: "Dinner: Tsukiji-style sushi"
+        location: "Sushi Zanmai Shinjuku"
+        type: "dining"
+  - day: 2
+    date: "2026-05-15"
+    city: "Tokyo"
+    activities:
+      - time: "09:30"
+        title: "Senso-ji Temple"
+        location: "Asakusa"
+        type: "sightseeing"
+      - time: "11:30"
+        title: "Asakusa walking tour"
+        location: "Asakusa"
+        type: "tour"
+      - time: "14:00"
+        title: "Tokyo Skytree"
+        location: "Sumida"
+        type: "sightseeing"
+  - day: 3
+    date: "2026-05-16"
+    city: "Tokyo"
+    activities:
+      - time: "10:00"
+        title: "teamLab Planets"
+        location: "Toyosu"
+        type: "sightseeing"
+      - time: "15:00"
+        title: "Shibuya Crossing + Hachiko"
+        location: "Shibuya"
+        type: "sightseeing"
+
+weather:
+  - city: "Tokyo"
+    date: "2026-05-14"
+    summary: "Cloudy"
+    temp_high_c: 22
+    temp_low_c: 16
+    precip_probability: 30
+    notes: "Light breeze, sunset 18:35."
+  - city: "Tokyo"
+    date: "2026-05-15"
+    summary: "Rain"
+    temp_high_c: 19
+    temp_low_c: 15
+    precip_probability: 70
+    notes: "Steady rain morning, easing after 14:00. Carry an umbrella."
+  - city: "Tokyo"
+    date: "2026-05-16"
+    summary: "Partly sunny"
+    temp_high_c: 23
+    temp_low_c: 17
+    precip_probability: 20
+    notes: "Pleasant. Good day for outdoor sights."
+  - city: "Tokyo"
+    date: "2026-05-17"
+    summary: "Sunny"
+    temp_high_c: 25
+    temp_low_c: 18
+    precip_probability: 10
+    notes: "Warmest day of the trip."
