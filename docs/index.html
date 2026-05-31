@@ -312,18 +312,18 @@
       </div>
       <div class="step">
         <span class="n">3</span>
-        <h4>Queue drains to NATS</h4>
-        <p>A Solace Queue buffers the event; the Micro-Integration drains it into NATS, where a NATS subscriber records that the customer made an itinerary change.</p>
+        <h4>Agents collaborate</h4>
+        <p>Gateway invokes Orchestrator; it fans out to Flights, Weather, Itinerary, Images and reschedules the affected itinerary.</p>
       </div>
       <div class="step">
         <span class="n">4</span>
-        <h4>Agents collaborate</h4>
-        <p>Gateway invokes Orchestrator; it fans out to Flights, Weather, Itinerary, Images.</p>
+        <h4>Traveler decides</h4>
+        <p>Only the affected traveler's phone renders the re-plan card via solclientjs; the traveler accepts or rejects the proposed change.</p>
       </div>
       <div class="step">
         <span class="n">5</span>
-        <h4>Targeted replan</h4>
-        <p>Only the affected traveler's phone renders the new card via solclientjs.</p>
+        <h4>Change recorded</h4>
+        <p>Once accepted, the itinerary change flows back through the broker: a Solace Queue buffers it, the Micro-Integration drains it into NATS, and the NATS Itinerary Recorder logs that the customer changed their itinerary.</p>
       </div>
     </div>
 

@@ -16,7 +16,7 @@ Reworked the runtime architecture diagram in `docs/index.html` to reflect a corr
 - Final sink renamed from generic NATS Subscriber to Itinerary Recorder (NATS subscriber that records customer itinerary changes).
 - Egress lane edges given a distinct ink dashed style (`.edge.egress`) and ink arrowheads so they no longer share the green outbound styling used for per-traveler replies.
 - Legend gains an entry for the egress recording lane (`.swatch.egress`).
-- End-to-end flow steps 2 and 3 updated to match the new flow.
+- End-to-end flow steps reordered so itinerary-change recording is the final step: signal arrives, agents reschedule, traveler accepts or rejects, then the accepted change flows back through the broker into the Queue to MI to NATS Itinerary Recorder lane.
 
 ### Team name (docs/index.html)
 
