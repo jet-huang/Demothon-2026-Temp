@@ -13,6 +13,7 @@
     <header class="topbar">
       <img class="logo" src="assets/svg/solace-logo.svg" alt="Solace logo" />
       <div class="topbar-right">
+        <span class="badge">Team H²</span>
         <span class="badge">FY27 Demothon</span>
         <!--
           DEPLOYMENT NOTE: Update this href before promoting to production.
@@ -74,7 +75,7 @@
         <!-- ===== Row A: Production source chain (left) & Sinks (right) ===== -->
         <!-- Cards use a vertical layout (eyebrow, centered icon, two-line title) so labels never collide. -->
 
-        <!-- Flight Change Signal (upstream producer) -->
+        <!-- Flight Change Signal (upstream producer → straight into broker) -->
         <g>
           <rect class="surface" x="30" y="30" width="150" height="150" rx="14"/>
           <text class="t-eyebrow" x="105" y="54" text-anchor="middle">Upstream</text>
@@ -84,24 +85,46 @@
           <text class="t-name" x="105" y="156" text-anchor="middle">Signal</text>
         </g>
 
-        <!-- NATS (in-house transport) -->
+        <!-- ===== Egress logging lane (left column): Broker → Solace Queue → MI → NATS → Itinerary Recorder ===== -->
+
+        <!-- Solace Queue (durable egress buffer) -->
         <g>
-          <rect class="surface" x="210" y="30" width="130" height="150" rx="14"/>
-          <text class="t-eyebrow" x="275" y="54" text-anchor="middle">Transport</text>
-          <rect class="icon-tile" x="249" y="66" width="52" height="52" rx="10"/>
-          <image href="assets/svg/nats.svg" x="257" y="74" width="36" height="36"/>
-          <text class="t-name" x="275" y="138" text-anchor="middle" style="font-size:16px">NATS</text>
-          <text class="t-sub"  x="275" y="156" text-anchor="middle">in-house pub/sub</text>
+          <rect class="surface" x="40" y="240" width="250" height="80" rx="14"/>
+          <rect class="icon-tile" x="58" y="256" width="48" height="48" rx="10"/>
+          <image href="assets/svg/topic.svg" x="64" y="262" width="36" height="36"/>
+          <text class="t-eyebrow" x="120" y="266">Buffer</text>
+          <text class="t-name"    x="120" y="288">Solace Queue</text>
+          <text class="t-sub"     x="120" y="306">durable egress</text>
         </g>
 
-        <!-- Micro-Integration (bridge) -->
+        <!-- Micro-Integration (bridge: Solace Queue → NATS) -->
         <g>
-          <rect class="surface" x="370" y="30" width="170" height="150" rx="14"/>
-          <text class="t-eyebrow" x="455" y="54" text-anchor="middle">Bridge</text>
-          <rect class="icon-tile" x="429" y="66" width="52" height="52" rx="10"/>
-          <image href="assets/svg/mi-bridge.svg" x="437" y="74" width="36" height="36"/>
-          <text class="t-name" x="455" y="138" text-anchor="middle">Micro-Integration</text>
-          <text class="t-sub"  x="455" y="156" text-anchor="middle">NATS → Solace topic</text>
+          <rect class="surface" x="40" y="334" width="250" height="80" rx="14"/>
+          <rect class="icon-tile" x="58" y="350" width="48" height="48" rx="10"/>
+          <image href="assets/svg/mi-bridge.svg" x="64" y="356" width="36" height="36"/>
+          <text class="t-eyebrow" x="120" y="360">Bridge</text>
+          <text class="t-name"    x="120" y="382">Micro-Integration</text>
+          <text class="t-sub"     x="120" y="400">Solace Queue → NATS</text>
+        </g>
+
+        <!-- NATS (in-house transport, fed by the MI) -->
+        <g>
+          <rect class="surface" x="40" y="428" width="250" height="80" rx="14"/>
+          <rect class="icon-tile" x="58" y="444" width="48" height="48" rx="10"/>
+          <image href="assets/svg/nats.svg" x="64" y="450" width="36" height="36"/>
+          <text class="t-eyebrow" x="120" y="454">Transport</text>
+          <text class="t-name"    x="120" y="476" style="font-size:16px">NATS</text>
+          <text class="t-sub"     x="120" y="494">in-house pub/sub</text>
+        </g>
+
+        <!-- Itinerary Recorder (NATS subscriber: records customer itinerary changes) -->
+        <g>
+          <rect class="surface" x="40" y="522" width="250" height="80" rx="14"/>
+          <rect class="icon-tile" x="58" y="538" width="48" height="48" rx="10"/>
+          <image href="assets/svg/nats.svg" x="64" y="544" width="36" height="36"/>
+          <text class="t-eyebrow" x="120" y="548">NATS Subscriber</text>
+          <text class="t-name"    x="120" y="570">Itinerary Recorder</text>
+          <text class="t-sub"     x="120" y="588">records itinerary changes</text>
         </g>
 
         <!-- Phones (sinks) -->
@@ -151,13 +174,20 @@
 
         <!-- ===== Edges: Production source chain ↔ Broker ===== -->
 
-        <!-- Signal → NATS -->
-        <path class="edge inbound" d="M 180,92 H 210" marker-end="url(#ah-inbound)"/>
-        <!-- NATS → MI -->
-        <path class="edge inbound" d="M 340,92 H 370" marker-end="url(#ah-inbound)"/>
-        <!-- MI → Broker (down into broker top) -->
-        <path class="edge inbound" d="M 455,180 V 240" marker-end="url(#ah-inbound)"/>
-        <text class="t-edge inbound" x="465" y="214">flight-change</text>
+        <!-- Signal → Broker (straight into the source broker) -->
+        <path class="edge inbound" d="M 105,180 V 210 H 390 V 240" marker-end="url(#ah-inbound)"/>
+        <text class="t-edge inbound" x="150" y="204">flight-change</text>
+
+        <!-- Egress recording lane edges (distinct ink style, left column) -->
+        <!-- Broker → Solace Queue (drain out of broker left edge) -->
+        <path class="edge egress" d="M 380,280 H 290" marker-end="url(#ah-ink)"/>
+        <text class="t-edge" x="300" y="272">drain</text>
+        <!-- Solace Queue → MI -->
+        <path class="edge egress" d="M 160,320 V 334" marker-end="url(#ah-ink)"/>
+        <!-- MI → NATS -->
+        <path class="edge egress" d="M 160,414 V 428" marker-end="url(#ah-ink)"/>
+        <!-- NATS → Itinerary Recorder -->
+        <path class="edge egress" d="M 160,508 V 522" marker-end="url(#ah-ink)"/>
 
         <!-- Broker → Phones (orthogonal fan-out from broker right edge) -->
         <path class="edge outbound" d="M 1020,300 H 1068 V 182" marker-end="url(#ah-outbound)"/>
@@ -260,6 +290,7 @@
       <div class="legend">
         <div><span class="swatch inbound"></span>Inbound chaos topic <code>D/changes/flight/...</code></div>
         <div><span class="swatch outbound"></span>Outbound per-traveler reply <code>D/res/{traveler_id}/...</code></div>
+        <div><span class="swatch egress"></span>Egress recording lane → Itinerary Recorder</div>
         <div><span class="swatch bus"></span>A2A invocation across SAM</div>
       </div>
     </div>
@@ -277,12 +308,12 @@
       <div class="step">
         <span class="n">2</span>
         <h4>Signal arrives</h4>
-        <p>Airline ops feed emits a flight-change signal onto a NATS subject (today: Kiosk chaos button stands in).</p>
+        <p>Airline ops feed publishes a flight-change signal straight onto <code>D/changes/flight/...</code> on the source Solace broker (today: Kiosk chaos button stands in).</p>
       </div>
       <div class="step">
         <span class="n">3</span>
-        <h4>MI bridges to Solace</h4>
-        <p>The Micro-Integration republishes onto <code>D/changes/flight/...</code> on the Solace broker.</p>
+        <h4>Queue drains to NATS</h4>
+        <p>A Solace Queue buffers the event; the Micro-Integration drains it into NATS, where a NATS subscriber records that the customer made an itinerary change.</p>
       </div>
       <div class="step">
         <span class="n">4</span>
@@ -297,7 +328,7 @@
     </div>
 
     <footer>
-      <span>Sponsor: Solace · Brand assets © Solace Corporation</span>
+      <span>Built by Team H² · Sponsor: Solace · Brand assets © Solace Corporation</span>
       <span>Static page · no CDN · sources under <code>diagram-pages/</code></span>
     </footer>
   </main>

@@ -210,6 +210,7 @@ p.lead {
 .edge.inbound  { stroke: var(--inbound); }
 .edge.outbound { stroke: var(--outbound); }
 .edge.bus      { stroke: var(--bus); stroke-dasharray: 5 4; }
+.edge.egress   { stroke: var(--ink-soft); stroke-dasharray: 2 5; }
 
 /* Legend */
 .legend {
@@ -241,6 +242,9 @@ p.lead {
 .legend .swatch.outbound { background: var(--outbound); }
 .legend .swatch.bus {
   background: repeating-linear-gradient(to right, var(--bus) 0 6px, transparent 6px 10px);
+}
+.legend .swatch.egress {
+  background: repeating-linear-gradient(to right, var(--ink-soft) 0 3px, transparent 3px 8px);
 }
 
 /* Flow steps */
